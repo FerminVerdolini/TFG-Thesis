@@ -24,6 +24,13 @@
 *.acn
 *.acr
 *.alg
+*.bcf
+*.cod
+*.glsdefs
+*.loa
+*.sbl
+*.slg
+*.sym
 
 # Archivos PDF generados (opcional: bórralo si quieres versionar PDFs)
 *.pdf
