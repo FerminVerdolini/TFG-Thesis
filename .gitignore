@@ -31,6 +31,7 @@
 *.sbl
 *.slg
 *.sym
+*.vdo
 
 # Archivos PDF generados (opcional: bórralo si quieres versionar PDFs)
 *.pdf

@@ -1,7 +1,0 @@
-This is makeindex, version 2.15 [TeX Live 2022/dev] (kpathsea + Thai support).
-Scanning style file ./book-flatten-snapshot.ist.............................done (29 attributes redefined, 0 ignored).
-Scanning input file book-flatten-snapshot.sbl....done (7 entries accepted, 0 rejected).
-Sorting entries....done (19 comparisons).
-Generating output file book-flatten-snapshot.sym....done (16 lines written, 0 warnings).
-Output written in book-flatten-snapshot.sym.
-Transcript written in book-flatten-snapshot.slg.
