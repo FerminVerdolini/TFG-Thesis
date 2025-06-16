@@ -1,0 +1,44 @@
+# Compilación de LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.brf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.dvi
+*.glg
+*.glo
+*.gls
+*.ist
+*.acn
+*.acr
+*.alg
+
+# Archivos PDF generados (opcional: bórralo si quieres versionar PDFs)
+*.pdf
+
+# Archivos temporales de algunos editores
+*~
+*.swp
+*.bak
+
+# VS Code settings (opcional)
+.vscode/
+
+# Archivos generados por make
+Makefile.bak
+
+# Subcarpetas generadas automáticamente
+_auto/
+_build/
