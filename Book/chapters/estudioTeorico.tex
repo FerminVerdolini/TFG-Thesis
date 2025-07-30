@@ -21,87 +21,167 @@
 % You can freely use this template and please contribute with comments or suggestions!!!
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Estudio teórico}
+\chapter{Estudio teórico y estado del arte}
 \label{cha:estudio-teorico}
 
-\begin{FraseCelebre}
-  \begin{Frase}
-    Y así, del mucho leer y del poco dormir, se le secó el cerebro de manera que vino a perder el juicio\footnote{Tomado de ejemplos del proyecto \texis{}.}.
-  \end{Frase}
-  \begin{Fuente}
-    Miguel de Cervantes Saavedra
-  \end{Fuente}
-\end{FraseCelebre}
-
+Este capítulo presenta los conceptos fundamentales sobre emulación y virtualización en el contexto de los sistemas embebidos, así como un análisis del uso actual de herramientas como QEMU en investigación, industria y plataformas abiertas como RISC-V. Se introduce además la relevancia de Gaisler y su arquitectura NOEL-V, dado su vínculo directo con el sistema virtualizado desarrollado en este trabajo.
 
 \section{Introducción}
-\label{sec:introduccion-teoria}
 
-En este capítulo se cuenta tal y tal.
+El diseño y validación de sistemas embebidos ha evolucionado significativamente gracias a las técnicas de emulación y virtualización. Estas herramientas permiten desarrollar y probar software en ausencia del hardware final, reduciendo costos, acelerando el ciclo de desarrollo y facilitando tareas como la depuración, la automatización del testing o la validación funcional temprana.
 
-El capítulo se estructura en $n$ apartados\ldots
+QEMU, una de las plataformas de emulación más utilizadas, ofrece un entorno flexible y extensible para modelar sistemas heterogéneos, incluyendo SoCs personalizados y arquitecturas no convencionales como RISC-V. Este capítulo profundiza en su rol actual en proyectos reales, tanto en academia como en la industria.
 
+\section{Emulación y virtualización en sistemas embebidos}
 
-\section{Estado del Arte}
-\label{sec:estadoarte}
-
-En el estado del arte se enumeran los trabajos más relevantes de otros grupos de investigación. A continuación se muestra un ejemplo del uso de viñetas que nos proporciona \texttt{itemize}:
+\subsection*{Conceptos fundamentales}
 
 \begin{itemize}
-  \item En el trabajo .....
-  \item En el siguiente trabajo.....
+    \item \textbf{Virtualización:} Técnica que permite ejecutar múltiples sistemas operativos sobre una misma plataforma física mediante hipervisores, compartiendo recursos del hardware. Es común en entornos cloud y servidores.
+    
+    \item \textbf{Emulación:} Técnica que replica el comportamiento completo de un sistema hardware en otro diferente, tanto a nivel de CPU como de periféricos. Resulta clave para arquitecturas personalizadas, ISA alternativas o hardware aún no fabricado.
 \end{itemize}
 
-O citas en un párrafo real: Sin embargo, hay entornos acústicos donde las tasas de error conseguidas son todavía demasiado altas. En concreto, las aplicaciones en las que la captura de la señal de habla se hace usando micrófonos alejados del locutor (típicamente para distancias superiores a un metro) muestran una fuerte sensibilidad a los problemas de reverberación, ruido aditivo y baja relación señal a ruido (\cite{gelbart02},\cite{kochkin02}). En estos entornos, se ha propuesto el uso de arrays de micrófonos como un método para mejorar la calidad del habla capturada \cite{seltzer03}\cite{herbordt05}.
+En el ámbito embebido, la emulación resulta especialmente útil para validar periféricos, probar firmwares y desarrollar software sin necesidad de acceso físico al hardware.
 
-Existen múltiples formas de insertar figuras en Latex. A continuación, se muestra un ejemplo del uso de \texttt{figure}. Como se puede ver en la Figura \ref{fig:fig1} también se pueden poner referencias a las figuras por medio de \texttt{ref} y la etiqueta \texttt{label} de la figura en particular.
+\section{QEMU como emulador abierto y extensible}
 
-\begin{figure}[h] %el especificador [h] indica que ponga la figura aqui si es posible
-  \centering \includegraphics[width=4.7in]{Figure1}
-  % where an .eps filename suffix will be assumed under latex, and a .pdf suffix will be assumed for pdflatex
-  \caption{Departamento de Electrónica.}
-  \label{fig:fig1}
-\end{figure}
+\subsection{Historia y evolución}
 
-Y ahora un ejemplo en el que ponemos el \texttt{caption} en el lateral:
+QEMU (Quick Emulator) es una plataforma de emulación y virtualización desarrollada inicialmente por Fabrice Bellard en el año 2003. Desde sus comienzos, QEMU se diseñó como un emulador rápido, capaz de ejecutar código binario destinado a una arquitectura de hardware distinta a la del host. A lo largo de los años, ha evolucionado hasta convertirse en una herramienta de referencia para el desarrollo, prueba y validación de sistemas operativos, firmwares y sistemas embebidos.
 
-\begin{SCfigure}
-  \centering \includegraphics[width=0.5\textwidth]{Figure1}
-  \caption{Departamento de Electrónica en el lateral.}
-\end{SCfigure}
+Una de sus características más destacadas es su capacidad para emular una amplia variedad de arquitecturas, incluyendo x86, ARM, RISC-V, PowerPC, SPARC, MIPS, entre otras. Esta versatilidad lo convierte en una solución ideal tanto para entornos académicos como industriales que requieren validar software sobre arquitecturas heterogéneas. QEMU también ofrece integración nativa con herramientas de depuración como GDB, lo que permite analizar en detalle el comportamiento del sistema emulado, incluyendo registros, memoria y puntos de interrupción.
+
+Adicionalmente, su arquitectura modular ha permitido que sea adoptado como base para otras herramientas y tecnologías de virtualización, como KVM (Kernel-based Virtual Machine), virt-manager, y plataformas de automatización de pruebas. Esta extensibilidad ha sido clave para su adopción masiva y su continua evolución dentro del ecosistema del software libre.
+
+\subsection{Casos de uso comunes}
+
+QEMU ha encontrado aplicaciones en una amplia gama de escenarios. En el desarrollo de sistemas operativos y firmwares, permite a los ingenieros ejecutar y depurar código sin necesidad de disponer de hardware físico, facilitando la validación temprana de componentes críticos. Es especialmente útil en el caso de nuevas arquitecturas como RISC-V, donde el hardware puede no estar aún disponible o puede ser costoso.
+
+En el contexto de la integración continua (CI/CD), QEMU se emplea para ejecutar automáticamente pruebas de regresión, validación funcional y pruebas de integración. Gracias a su capacidad de ser ejecutado en entornos desatendidos y su soporte para salida sin interfaz gráfica (\texttt{-nographic}), es una herramienta ideal para pipelines de testing en entornos embebidos.
+
+También es ampliamente utilizado en entornos educativos, donde permite a estudiantes interactuar con sistemas reales emulados, experimentar con arquitecturas de bajo nivel, y entender mejor el funcionamiento de sistemas operativos y microprocesadores. Además, permite simular periféricos específicos, lo cual es de gran utilidad para el estudio de controladores y subsistemas de entrada/salida.
+
+En definitiva, QEMU ha trascendido su papel original como emulador para convertirse en una plataforma versátil y esencial en el desarrollo moderno de sistemas informáticos.
+
+\section{Aplicaciones reales de QEMU en investigación e industria}
+\label{sec:estado-arte-industria}
+
+La emulación de hardware mediante herramientas como QEMU ha dejado de ser un recurso limitado a laboratorios académicos o pruebas aisladas, para convertirse en un componente esencial dentro del ciclo de vida del software embebido. En la actualidad, QEMU se emplea activamente tanto en entornos de investigación como en procesos industriales, cumpliendo un rol central en el desarrollo temprano, la validación funcional y la automatización de pruebas.
+
+El auge de arquitecturas abiertas como RISC-V, sumado a la creciente complejidad de los SoCs modernos, ha impulsado la adopción de plataformas virtualizadas como medio para reducir la dependencia del hardware físico y acelerar los ciclos de desarrollo. La emulación permite validar periféricos, probar sistemas operativos, depurar errores y realizar regresiones en múltiples configuraciones de hardware desde entornos reproducibles y automatizables \cite{jiang2021ecmo}.
+
+A continuación, se presentan ejemplos representativos que ilustran las capacidades actuales de QEMU:
+
+\begin{itemize}
+    \item \textbf{Sistemas DAQ embebidos (Zabołotny, 2021–2022):} Se empleó QEMU para validar de forma simultánea el firmware FPGA, el controlador de kernel en Linux y la aplicación de usuario, facilitando el desarrollo iterativo de sistemas de adquisición de datos sin requerir tarjetas físicas PCIe \cite{zabolotny2021daq}.
+    
+    \item \textbf{Plataformas MIPS64 embebidas (Mehmood et al., 2016):} QEMU fue extendido para emular Octeon, una arquitectura MIPS64 utilizada en sistemas embebidos, demostrando que la emulación puede alcanzar desempeños comparables al hardware real durante las etapas iniciales del desarrollo \cite{mehmood2016mips64}.
+    
+    \item \textbf{Rehosting de firmware embebido (Jiang et al., 2021):} Se desarrolló una técnica para reemplazar periféricos reales por equivalentes virtuales compatibles, permitiendo ejecutar imágenes Linux embebidas originales dentro de QEMU. Esta técnica, conocida como \emph{trasplante de periféricos}, alcanzó una tasa de éxito del 87\% en más de 800 firmwares \cite{jiang2021ecmo}.
+    
+    \item \textbf{Emulación de SoCs IoT (Osman, 2020):} El SoC nRF51 fue emulado exitosamente en QEMU, ejecutando sistemas operativos como Zephyr. Aunque con ciertas limitaciones temporales, la velocidad y funcionalidad fueron suficientes para validar aplicaciones embebidas IoT \cite{osman2020iot}.
+    
+    \item \textbf{Sistemas críticos y virtualización (Cinque et al., 2021):} En entornos aeroespaciales y automotrices, QEMU se ha empleado como base para pruebas certificables, habilitando aislamiento funcional y validación de componentes críticos sin acceso al hardware final \cite{cinque2021critical}.
+\end{itemize}
+
+\vspace{1em}
+Estos casos reflejan una tendencia creciente: el uso de QEMU no se limita a simular CPU, sino que se ha convertido en una herramienta clave para modelar sistemas embebidos completos, incluyendo buses, periféricos personalizados, controladores de interrupciones y más. Su integración con pipelines CI, su compatibilidad con arquitecturas modernas y su naturaleza extensible lo convierten en un recurso estratégico para el diseño confiable de sistemas embebidos contemporáneos.
+\section{Emulación con QEMU en RISC-V y entornos de integración continua}
+\label{subsec:riscv-ci-industria}
+
+El auge de la arquitectura RISC-V, impulsado por su naturaleza abierta y modular, ha favorecido el desarrollo de herramientas y flujos de trabajo que dependen fuertemente de la emulación. En este contexto, QEMU se ha consolidado como una plataforma fundamental para ejecutar, depurar y validar software en arquitecturas RISC-V incluso en ausencia de hardware físico. Su integración con pipelines de integración continua (CI) permite una validación sistemática y automatizada de firmwares, sistemas operativos y componentes críticos, habilitando el desarrollo confiable de productos embebidos.
+
+\subsection*{CI para verificación funcional en RISC-V: Proyecto Caliptra}
+
+Antmicro, en colaboración con Google y otras compañías del consorcio CHIPS Alliance, implementó un pipeline de CI para validar de forma continua el núcleo VeeR de RISC-V dentro del proyecto Caliptra, utilizado en soluciones de raíz de confianza por empresas como AMD, Microsoft y NVIDIA. Esta infraestructura ejecuta pruebas funcionales y de cobertura RTL en cada commit, sobre múltiples configuraciones del core (EH1, EH2, EL2), garantizando estabilidad, seguridad y mantenibilidad del hardware \cite{antmicro_caliptra}.
+
+\subsection*{Testing de Linux RISC-V en CI con hardware real y virtual}
+
+En Codethink, se desarrolló un pipeline de CI sobre GitLab que combina la emulación en QEMU con despliegue automático sobre hardware real (placas SiFive Unmatched). Se utilizan herramientas como LAVA y OpenQA para validar el arranque, login y funcionamiento básico de una imagen Linux construida para RISC-V, asegurando que las modificaciones en el kernel o el entorno de usuario no introduzcan regresiones \cite{codethink_ci}.
+
+\subsection*{Pruebas automatizadas de RTOS y firmware}
+
+Proyectos como Apache NuttX emplean QEMU dentro de pipelines CI para validar binarios de firmware embebido. En cada ejecución, el sistema arranca una imagen y analiza su salida para detectar errores de acceso a memoria, fallos de segmentación o comportamiento incorrecto, todo ello sin necesidad de hardware físico \cite{apache_nuttx}.
+
+\subsection*{Adopción comunitaria en entornos profesionales}
+
+Foros y espacios técnicos de desarrollo embebido (como Reddit r/embedded) reflejan una adopción generalizada de QEMU como entorno de pruebas unitarias y de integración. Muchas compañías y desarrolladores independientes emplean GitHub Actions o Jenkins junto con QEMU para ejecutar baterías de tests en CI, simulando arquitecturas RISC-V, ARM o MIPS. En ocasiones, estos entornos se complementan con hardware real conectado mediante runners personalizados, permitiendo una validación híbrida \cite{reddit_ci}.
+
+\vspace{1em}
+En conjunto, estos casos confirman que el uso de QEMU en CI ha trascendido el ámbito experimental. Hoy es una herramienta central en procesos DevOps aplicados a sistemas embebidos, ofreciendo una base sólida para la validación funcional de arquitecturas abiertas como RISC-V, con beneficios concretos en tiempo de desarrollo, reproducibilidad y robustez del software.
 
 
 
-\section{Técnicas utilizadas}
-\label{sec:tecnicas-utilizadas}
 
-Aquí vamos a probar todos los niveles de sección disponibles, para evaluar la asignación de \texttt{tocdepth}...
+% \section{Aplicaciones reales de QEMU en investigación e industria}
+% \label{sec:estado-arte-industria}
 
-Blah, blah, blah\ldots
+% La emulación de hardware mediante herramientas como QEMU ha dejado de ser un recurso limitado a laboratorios académicos o pruebas aisladas, para convertirse en un componente esencial dentro del ciclo de vida del software embebido. En la actualidad, QEMU se emplea activamente tanto en entornos de investigación como en procesos industriales, cumpliendo un rol central en el desarrollo temprano, la validación funcional y la automatización de pruebas.
 
+% El auge de arquitecturas abiertas como RISC-V, sumado a la creciente complejidad de los SoCs modernos, ha impulsado la adopción de plataformas virtualizadas como medio para reducir la dependencia del hardware físico y acelerar los ciclos de desarrollo. La emulación permite validar periféricos, probar sistemas operativos, depurar errores y realizar regresiones en múltiples configuraciones de hardware desde entornos reproducibles y automatizables.
 
-\subsection{Subsección}
-\label{sec:subseccion}
+% A continuación, se presentan ejemplos representativos que ilustran las capacidades actuales de QEMU:
 
+% \begin{itemize}
+%     \item \textbf{Sistemas DAQ embebidos (Zabołotny, 2021–2022):} Se empleó QEMU para validar de forma simultánea el firmware FPGA, el controlador de kernel en Linux y la aplicación de usuario, facilitando el desarrollo iterativo de sistemas de adquisición de datos sin requerir tarjetas físicas PCIe.
+    
+%     \item \textbf{Plataformas MIPS64 embebidas (Mehmood et al., 2016):} QEMU fue extendido para emular Octeon, una arquitectura MIPS64 utilizada en sistemas embebidos, demostrando que la emulación puede alcanzar desempeños comparables al hardware real durante las etapas iniciales del desarrollo.
+    
+%     \item \textbf{Rehosting de firmware embebido (Jiang et al., 2021):} Se desarrolló una técnica para reemplazar periféricos reales por equivalentes virtuales compatibles, permitiendo ejecutar imágenes Linux embebidas originales dentro de QEMU. Esta técnica, conocida como \emph{trasplante de periféricos}, alcanzó una tasa de éxito del 87\% en más de 800 firmwares.
+    
+%     \item \textbf{Emulación de SoCs IoT (Osman, 2020):} El SoC nRF51 fue emulado exitosamente en QEMU, ejecutando sistemas operativos como Zephyr. Aunque con ciertas limitaciones temporales, la velocidad y funcionalidad fueron suficientes para validar aplicaciones embebidas IoT.
+    
+%     \item \textbf{Sistemas críticos y virtualización (Cinque et al., 2021):} En entornos aeroespaciales y automotrices, QEMU se ha empleado como base para pruebas certificables, habilitando aislamiento funcional y validación de componentes críticos sin acceso al hardware final.
+% \end{itemize}
 
-\subsubsection{Subsubsección}
-\label{sec:subsubseccion}
+% \vspace{1em}
+% Estos casos reflejan una tendencia creciente: el uso de QEMU no se limita a simular CPU, sino que se ha convertido en una herramienta clave para modelar sistemas embebidos completos, incluyendo buses, periféricos personalizados, controladores de interrupciones y más. Su integración con pipelines CI, su compatibilidad con arquitecturas modernas y su naturaleza extensible lo convierten en un recurso estratégico para el diseño confiable de sistemas embebidos contemporáneos.
 
-\paragraph{Paragraph}
-\label{sec:paragraph-1}
+% \section{Emulación con QEMU en la industria e investigación: estado del arte}
+% \label{sec:estado-arte-industria}
 
+% QEMU se ha consolidado en la última década como una de las herramientas más versátiles y ampliamente adoptadas en el desarrollo de sistemas embebidos. Su arquitectura modular, su naturaleza libre y de código abierto, y su constante evolución lo han posicionado como una plataforma clave en una diversidad de aplicaciones, desde la validación temprana de hardware hasta la integración continua de software embebido.
 
-\subparagraph{Subparagraph}
-\label{sec:subparagraph}
+% El estado actual de la emulación en contextos profesionales revela una tendencia clara hacia la \textbf{emulación sistemática de plataformas completas}, no solo a nivel de CPU, sino también con periféricos complejos, buses y subsistemas heterogéneos. Esta capacidad permite que el software (firmware, drivers, RTOS o kernels completos) sea probado y validado incluso en etapas previas al tape-out del hardware, algo fundamental en industrias donde los ciclos de desarrollo son costosos o prolongados.
 
+% Además, el uso de QEMU se ha integrado de forma natural dentro de los \textbf{pipelines de integración continua (CI/CD)}, convirtiéndose en un eslabón fundamental en procesos modernos de DevOps embebido. Este enfoque ha sido impulsado, entre otros factores, por el auge de arquitecturas abiertas como RISC-V, el desarrollo de plataformas modulares y el aumento de herramientas automatizadas para pruebas y verificación.
 
+% \vspace{1em}
+% A continuación, se describen algunos casos representativos del uso de QEMU en la industria e investigación, enmarcados dentro de estas tendencias:
 
-\section{Conclusiones}
-\label{sec:conclusiones-teoria}
+% \subsection*{Desarrollo co-simulado de sistemas DAQ embebidos}
+% Zabołotny (2021–2022) propone una metodología para el desarrollo conjunto de firmware para FPGA, drivers de kernel y aplicaciones de usuario en sistemas de adquisición de datos basados en PCIe. QEMU permite emular configuraciones completas de CPU, memoria, controladores y periféricos, permitiendo iterar rápidamente sin necesidad de hardware real.
 
-Blah, blah, blah\ldots
+% \subsection*{Extensión de QEMU para arquitecturas personalizadas}
+% Mehmood et al. (2016) documentan la adaptación de QEMU para emular sistemas MIPS64 (Octeon) sobre x86, evaluando su rendimiento y usabilidad. Este caso ilustra cómo QEMU puede ser extendido para soportar arquitecturas propietarias en proyectos que requieren prototipado temprano.
 
-%%% Local Variables:
-%%% TeX-master: "../book"
-%%% End:
+% \subsection*{Rehosting de firmware embebido con emulación de periféricos}
+% Jiang et al. (2021) desarrollan ECMO, una herramienta que permite ejecutar imágenes de firmware reales reemplazando dispositivos no soportados por equivalentes virtuales. La emulación permite realizar análisis de seguridad, pruebas funcionales y depuración sobre binarios embebidos sin acceso al hardware físico original.
+
+% \subsection*{IoT y plataformas RISC-V livianas}
+% QEMU ha demostrado ser efectivo para el desarrollo y prueba de plataformas como nRF51, utilizadas en aplicaciones IoT. A pesar de algunas limitaciones temporales, los sistemas operativos embebidos como Zephyr pueden ejecutarse de manera estable, facilitando la validación funcional.
+
+% \subsection*{Virtualización en sistemas críticos}
+% QEMU también ha sido integrado como backend de entornos de virtualización certificables para sistemas con distintos niveles de criticidad (ej., aeroespacial o automoción). Su uso en entornos mixtos permite separar dominios funcionales y realizar pruebas en condiciones reproducibles.
+
+% \vspace{1em}
+% En conjunto, estos ejemplos no solo muestran la versatilidad técnica de QEMU, sino que reflejan una adopción creciente en entornos donde la simulación y validación temprana es crucial. La emulación ha dejado de ser una etapa aislada de prueba para convertirse en una herramienta transversal en el flujo de desarrollo embebido moderno.
+
+\section{Procesadores Gaisler y la arquitectura NOEL-V}
+\label{subsec:gaisler-noelv}
+
+Gaisler, una división de CAES, es reconocida por sus procesadores orientados a sistemas espaciales y críticos. Sus productos incluyen:
+
+\begin{itemize}
+    \item \textbf{LEON:} Familia de procesadores basados en SPARC V8.
+    \item \textbf{NOEL-V:} Primer procesador RISC-V desarrollado por Gaisler.
+    \item \textbf{GRLIB:} Biblioteca IP en VHDL que incluye UARTs, timers, GPIOs y otros periféricos.
+    \item \textbf{NCC Toolchain:} Toolchain GCC/GDB adaptada para sistemas Gaisler.
+\end{itemize}
+
+Este trabajo replica el entorno de una placa NOEL compatible con GRLIB, utilizando QEMU como emulador de sistema completo. Dada la dificultad de acceso al hardware real en contextos críticos, como el aeroespacial, el uso de entornos virtuales como QEMU resulta clave para validar el software en condiciones reproducibles.
+
+\section{Conclusión del capítulo}
+
+La emulación mediante QEMU representa hoy una herramienta consolidada tanto en la investigación como en la industria. En el contexto de este TFG, su uso permite abordar el diseño y prueba de un sistema embebido complejo basado en RISC-V y periféricos GRLIB, replicando entornos industriales como los de Gaisler sin requerir hardware físico. El marco teórico y estado del arte presentado sienta así las bases para el desarrollo práctico abordado en los capítulos siguientes.

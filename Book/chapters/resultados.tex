@@ -22,365 +22,351 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Resultados}
-\label{cha:resultados}
+\chapter{Pruebas de validación funcional e integración continua}
+\label{cha:pruebas-validacion}
 
-
-\begin{FraseCelebre}
-  \begin{Frase}
-    % Si quieres ser leído más de una vez, no vaciles en borrar a menudo.
-    Rem tene, verba sequentur (Si dominas el tema, las palabras vendrán solas)\footnote{Tomado de ejemplos del proyecto \texis{}.}.
-  \end{Frase}
-  \begin{Fuente}
-    % Horacio
-    Catón el Viejo
-  \end{Fuente}
-\end{FraseCelebre}
 
 \section{Introducción}
-\label{sec:introduccion-resultados}
+\label{sec:introduccion-pruebas}
 
-En este capítulo se introducirán los resultados más relevantes del trabajo.
+En este capítulo se presentan las pruebas funcionales desarrolladas para validar el correcto funcionamiento del sistema emulado \texttt{noel-srg}. Las pruebas se enfocan en verificar el comportamiento esperado de los principales periféricos del SoC (UART, GPIO y temporizador), así como en comprobar la correcta gestión de interrupciones. Además, se describe el entorno de integración continua implementado para automatizar la ejecución de estas pruebas.
 
-La estructura del capítulo es\ldots
+A través de estos escenarios de prueba, se buscó validar no solo la correcta implementación del hardware virtualizado, sino también el flujo completo de interacción entre el software embebido, los periféricos y el sistema de interrupciones. Cada prueba se diseñó con el propósito de replicar condiciones típicas de uso en aplicaciones embebidas, asegurando así la aplicabilidad del sistema en contextos reales.
 
+Por último, se presentan los resultados obtenidos durante las distintas fases de validación, incluyendo el análisis del comportamiento observado en la consola de QEMU y el éxito o fallo de cada escenario de prueba.
 
-\section{Entorno experimental}
-\label{sec:entorno-experimental}
+\section{Entornos de experimentación y ejecución}
+\label{subsec:entornos-experimentacion}
 
-Blah, blah, blah.
+El proceso de validación funcional y depuración inicial de la máquina \texttt{noel-srg} se llevó a cabo en dos entornos diferenciados: una estación de trabajo local para el desarrollo y pruebas preliminares, y un entorno automatizado basado en \emph{GitHub Actions} para la ejecución continua de los tests en cada modificación del código.
 
+\subsubsection*{Entorno local de desarrollo}
 
-\subsection{Bases de datos utilizadas}
-\label{sec:bases-de-datos-1}
-
-Blah, blah, blah.
-
-
-\subsection{Métricas de calidad}
-\label{sec:metricas-de-calidad}
-
-Blah, blah, blah.
-
-En la tabla\ref{pruebaCalc2LaTeX} pongo un ejemplo del uso del conversor de libreoffice a \LaTeX{} (cortesía de Roberto Chamorro). Para usarlo tienes que importar la macro que encontrarás en el directorio \texttt{Tools/calc2latex//calc2latex\_024\_eur\_latex}\footnote{Para ello sigue el proceso de importación que se describe en \url{http://ask.libreoffice.org/en/question/35598/where-are-lo-basic-macros-stored/}, importando Cals y cuando ejecutes la macro hazlo por el punto de entrada \texttt{Main}, después de seleccionar el rango de celdas de la tabla.}
-
-\input{Tools/calc2latex/sample.tex}
-
-
-\subsection{Estrategia y metodología de experimentación}
-\label{sec:estr-y-metod}
-
-Blah, blah, blah.
-
-
-\section{Resultados experimentales}
-\label{sec:result-experim}
-
-A continuación, se muestra un ejemplo de tabla simple (ver tabla \ref{tab:table1}).
-
-\begin{table}
-  % increase table row spacing, adjust to taste
-  \renewcommand{\arraystretch}{1.3}
-  \caption{Comparativa.}
-  \label{tab:table1}
-  \begin{center}
-    % Some packages, such as MDW tools, offer better commands for making tables than the plain LaTeX2e tabular which is used here.
-    \begin{tabular}{|c|c|c|}
-      \hline
-      Method & Training Time & Man-Work (\%)\\
-      \hline
-      Propagation model & $<$ 30 sec & 5\\
-      \hline
-      Manual & 9 h 30 min & 24\\
-      \hline
-      Automatic & 2 h & 10 8\\
-      \hline
-    \end{tabular}
-  \end{center}
-\end{table}
-
-Cuando las tablas ocupan más de un página se debe utilizar un tipo especial de tablas denominado \texttt{longtable}. A continuación, se muestra un ejemplo del mismo (ver tabla \ref{table2}).
-
-\begin{center}
-	\begin{longtable}{|c|c|c|c|}
-    \caption[Resultados de la correlación cruzada.]{Resultados de la correlación cruzada.} \label{table2} \\
-    
-    \hline \multicolumn{1}{|c|}{\textbf{Posición Real}} & \multicolumn{1}{c|}{\textbf{Posición estimada}} & \multicolumn{1}{c|}{\textbf{Coef. Correlación}} & \multicolumn{1}{c|}{\textbf{Acierto/Fallo}} \\ \hline 
-    \endfirsthead
-    
-    \multicolumn{4}{c}%
-    {{\bfseries \tablename\ \thetable{} -- continúa en la página anterior}} \\
-    \hline \multicolumn{1}{|c|}{\textbf{Posición Real}} & \multicolumn{1}{c|}{\textbf{Posición estimada}} & \multicolumn{1}{c|}{\textbf{Coef. Correlación}} & \multicolumn{1}{c|}{\textbf{Acierto/Fallo}} \\ \hline 
-    \endhead
-    
-    \hline \multicolumn{4}{|r|}{{Continúa en la página siguiente}} \\ \hline
-    \endfoot
-
-    \hline \hline
-    \endlastfoot
-    
-    \hline	2P0	&	2P0	&	0,004954	&	A	\\
-    \hline	2P1	&	2P4	&	0,005752	&	F	\\
-    \hline	2P2	&	2P2	&	0,005461	&	A	\\
-    \hline	2P3	&	2P0	&	0,004634	&	F	\\
-    \hline	2P5	&	2P4	&	0,005991	&	F	\\
-    \hline	2P6	&	2P16	&	0,004410	&	F	\\
-    \hline	2P7	&	3P9	&	0,008038	&	F	\\
-    \hline	2P8	&	3P9	&	0,003753	&	F	\\
-    \hline	2P9	&	2P7	&	0,004908	&	F	\\
-    \hline	2P10	&	2P10	&	0,007273	&	A	\\
-    \hline	2P14	&	2P16	&	0,006485	&	F	\\
-    \hline	2P15	&	2P15	&	0,004932	&	A	\\
-    \hline	2P16	&	2P16	&	0,006237	&	A	\\
-    \hline	2P17	&	2P15	&	0,005110	&	F	\\
-    \hline	2P18	&	3P18	&	0,006235	&	F	\\
-    \hline	2P19	&	3P18	&	0,004827	&	F	\\
-    \hline	2P20	&	2P20	&	0,006877	&	A	\\
-    \hline	2P22	&	3P18	&	0,003048	&	F	\\
-    \hline	2P24	&	2P24	&	0,006833	&	A	\\
-    \hline	2P25	&	2P25	&	0,004875	&	A	\\
-    \hline	2P26	&	2P31	&	0,005511	&	F	\\
-    \hline	2P27	&	2P28	&	0,004590	&	F	\\
-    \hline	2P30	&	2P31	&	0,005576	&	F	\\
-    \hline	2P31	&	2P31	&	0,007213	&	A	\\
-    \hline	2P32	&	2P35	&	0,003340	&	F	\\
-    \hline	2P34	&	2P34	&	0,004128	&	A	\\
-    \hline	2P36	&	2P35	&	0,003329	&	F	\\
-    \hline	2P37	&	2P37	&	0,003468	&	A	\\
-    \hline	2P39	&	2P38	&	0,002577	&	F	\\
-    \hline	2P40	&	2P43	&	0,004303	&	F	\\
-    \hline	2P41	&	2P41	&	0,001573	&	A	\\
-    \hline	2P42	&	2P41	&	0,000846	&	F	\\
-    \hline	2P44	&	2P44	&	0,002732	&	A	\\
-    \hline	2P45	&	23P45	&	0,001958	&	F	\\
-    \hline	2P47	&	2P34	&	0,002869	&	F	\\
-    \hline	2P48	&	2P43	&	0,004569	&	F	\\
-    \hline	2P49	&	3P51	&	0,001374	&	F	\\
-    \hline	2P50	&	2P34	&	0,002274	&	F	\\
-    \hline	2P51	&	2P63	&	0,003931	&	F	\\
-    \hline	2P52	&	2P55	&	0,003537	&	F	\\
-    \hline	2P53	&	3P56	&	0,003126	&	F	\\
-    \hline	2P54	&	2P67	&	0,005560	&	F	\\
-    \hline	2P56	&	2P55	&	0,002817	&	F	\\
-    \hline	2P57	&	2P67	&	0,006168	&	F	\\
-    \hline	2P58	&	2P58	&	0,005278	&	A	\\
-    \hline	2P60	&	3P66	&	0,004966	&	F	\\
-    \hline	2P61	&	3P61	&	0,004748	&	A	\\
-    \hline	2P64	&	2P67	&	0,005342	&	F	\\
-    \hline	2P66	&	2P4	&	0,004172	&	F	\\
-    \hline	2P67	&	2P67	&	0,005706	&	A	\\
-    \hline	3P0	&	3P0	&	0,003674	&	A	\\
-    \hline	3P61	&	2P61	&	0,003263	&	F	\\
-    \hline	3P64	&	2P67	&	0,003484	&	F	\\
-    \hline	3P65	&	2P67	&	0,002975	&	F	\\
-    \hline	3P66	&	2P58	&	0,005029	&	F	\\
-    \hline	3P67	&	3P67	&	0,003714	&	A	\\
-	\end{longtable}
-\end{center}
-
-En algunas ocasiones, también resulta útil emplear el entorno
-\texttt{subfigure} para añadir múltiples imágenes dentro de la misma
-figura. A continuación, se muestra un ejemplo del uso en la figura
-\ref{fig:fig3}. También se pueden referenciar las sub-figuras de forma
-individual, por ejemplo la sub-figura \ref{fig:fig3b} (usando un método
-de cita), o bien la sub-figura \ref{fig:fig3}.\subref{fig:fig3b} (usando
-otro alternativo).
-
-% For this to work you need to (in preamble.tex):
-% - remove \usepackage{subfig}
-% - add \usepackage{caption}
-% - add \usepackage{subcaption}
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Figure2}
-    \caption{Mean Entropy.}
-    \label{fig:fig3a}
-  \end{subfigure}%
-  ~ %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-  % (or a blank line to force the subfigure onto a new line)
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Figure3}
-    \caption{Error Percentage.}
-    \label{fig:fig3b}
-  \end{subfigure}
-  \caption{Optimal trames number in the training data set.}
-  \label{fig:fig3}
-\end{figure}
-
-La figura~\ref{fig:LIdiapRoom} muestra otro ejemplo con referencias a las subfigures en el caption principal.
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.30\textwidth}
-    \includegraphics[width=\textwidth]{roomlayout2}
-    \caption{}
-    \label{fig:RoomLayout}
-  \end{subfigure}%
-  \qquad \qquad %add desired spacing between images, e. g. ~, \quad, \qquad, \hfill etc.
-  % (or a blank line to force the subfigure onto a new line)
-  \begin{subfigure}[b]{0.425\textwidth}
-    \includegraphics[width=\textwidth]{idiap-seq45-cam2.jpg}
-    \caption{}
-    \label{fig:RoomPicture}
-  \end{subfigure}
-  \caption{Idiap Smart Meeting Room for AV16.3 recordings. (\protect\subref{fig:RoomLayout}) Room layout showing the centered table, and the microphones arranged in two circular arrays. (\protect\subref{fig:RoomPicture}) Sample of recorded video frame showing the arrays area. \vspace{-0.3cm}}
-  \label{fig:LIdiapRoom}
-\end{figure}
-
-Os incluimos a continuación un párrafo de un artículo en el que hacemos referencia a varias figuras y subfiguras:
-
-\emph{The IDIAP Meeting Room (shown in figure~\ref{fig:LIdiapRoom}) is a $8.2m \times 3.6m \times 2.4m$ rectangular space containing a centrally located $4.8m \times 1.2m$ rectangular table, on top of which two circular microphone arrays of $10 cm$ radius are located, each of them composed by 8 microphones. The centers of the two arrays are separated by $80 cm$ and the origin of coordinates is located in the middle point between the two arrays. The arrays can be also seen in figures~\ref{fig:simureal_positions}.\subref{fig:Simulated_positions}, ~\ref{fig:simureal_positions}.\subref{fig:real_positions_short}, and ~\ref{fig:simureal_positions}.\subref{fig:real_positions_long}, in which only the relevant section of the room is displayed, each one showing different scenarios that were used in the experiments. A detailed description of the meeting room can be found in~\cite{moore2002}.}
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[t]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{angular2-short-improved}
-    \caption{For validation\\with simulated data.}
-    \label{fig:Simulated_positions}
-  \end{subfigure}
-~%add desired spacing between images, e. g. ~, \quad, \qquad,
-  % \hfill etc.
-  % (or a blank line to force the subfigure onto a new line)
-  \begin{subfigure}[t]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{positions1-short-improved}
-    \caption{For validation\\with real data and microphone pairs with $20~cm$ spacing.}
-    \label{fig:real_positions_short}
-  \end{subfigure}
-  ~
-  \begin{subfigure}[t]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{positions2-short-improved}
-    \caption{For validation\\with real data and microphone pairs with
-      $82.46~cm$ spacing.}
-    \label{fig:real_positions_long}
-  \end{subfigure}
-  \caption{Geometrical details for the experiments carried out. Only the
-    relevant section of the room is shown, and microphone pairs are
-    connected by solid lines.}
-  \label{fig:simureal_positions}
-\end{figure}
-
-En la figura~\ref{fig:Sim_angles} mostramos un ejemplo de varias
-figuras organizadas de forma un poco más complejo.
-
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Sim_seg025_ang090}
-    \caption{$0^{\circ}$}
-    \label{fig:Sim_ang090}
-  \end{subfigure}
-  % add desired spacing between images, e. g. ~, \quad, \qquad etc.
-  % (or a blank line to force the subfigure onto a new line)
-
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Sim_seg025_ang108}
-    \caption{$18^{\circ}$}
-    \label{fig:Sim_ang108}
-  \end{subfigure}
-  % add desired spacing between images, e. g. ~, \quad, \qquad etc.
-  % (or a blank line to force the subfigure onto a new line)
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Sim_seg025_ang126}
-    \caption{$36^{\circ}$}
-    \label{fig:Sim_ang126}
-  \end{subfigure}
-  % add desired spacing between images, e. g. ~, \quad, \qquad etc.
-  % (or a blank line to force the subfigure onto a new line)
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Sim_seg025_ang144}
-    \caption{$54^{\circ}$}
-    \label{fig:Sim_ang144}
-  \end{subfigure}
-  % add desired spacing between images, e. g. ~, \quad, \qquad etc.
-  % (or a blank line to force the subfigure onto a new line)
-
-  \begin{subfigure}[b]{0.3\textwidth}
-    \includegraphics[width=\textwidth]{Sim_seg025_ang162}
-    \caption{$72^{\circ}$}
-    \label{fig:Sim_ang162}
-  \end{subfigure}
-
-  \caption{Comparison between the steered power response generated by the model (solid line) and that calculated using simulated waveforms in the AV16.3 environment (stems). Results for the speaker in given angles and the array steered from -90º to +90º are shown.}
-  \label{fig:Sim_angles}
-\end{figure}
-
-También es posible incluir el código de una figura en un fichero \texttt{.tex} independiente (para hacer más legible el código del documento principal). Un ejemplo lo tenéis a continuación, incluyendo el texto en inglés del documento original:
-
-\emph{Figure~\ref{fig:SRPvsPatternSelected} includes the results of the comparison, for several speaker positions (1, 2, 4, 6, 8 and 16, emphasized in figure~\ref{fig:simureal_positions}.\subref{fig:real_positions_short}), and selected to provide different acoustic situations, both in terms of distance and angular position with respect to the arrays. All the graphics show the acoustic power map (predicted or calculated) for a regular two-dimensional grid of $10~cm$. The plot is provided from a top view of the room, spanning the full plan at a height of $61~cm$ above the microphone arrays (this height was the ground truth one for sequence 01). For each speaker position shown, three graphics are plotted:}
+La mayor parte del desarrollo y las pruebas iniciales se realizaron sobre una máquina con sistema operativo Ubuntu 22.04.5 LTS (\texttt{jammy}), ejecutando el kernel \texttt{6.8.0-60-generic}. Las características del hardware son las siguientes:
 
 \begin{itemize}
-  \item \emph{The graphics on the left show the SRP-PHAT acoustic power maps generated by the proposed model (for example, the left graphic in figure~\ref{fig:SRPvsPatternSelected}.\subref{fig:SRPvsModel_Fo1500_position1} for position 1).}
-  \item \emph{The graphics in the middle show the real SRP-PHAT acoustic power maps calculated using the real acoustic waveforms (for example, the middle graphic in figure~\ref{fig:SRPvsPatternSelected}.\subref{fig:SRPvsModel_Fo1500_position1} for position 1), for a single selected frame.}
-  \item \emph{The graphics on the right show the average real SRP-PHAT acoustic power maps, averaging for all the frames in which the user was in the given position (for example, the right graphic in figure~\ref{fig:SRPvsPatternSelected}.\subref{fig:SRPvsModel_Fo1500_position1} for position 1).}
+\item \textbf{Procesador}: 13th Gen Intel Core i5-1340P (12 núcleos físicos, 16 hilos, frecuencia máxima de 4.6 GHz).
+\item \textbf{Memoria RAM}: 32 GiB.
+\item \textbf{Almacenamiento}: SSD NVMe de 435 GiB, con aproximadamente 293 GiB libres durante las pruebas.
+\item \textbf{Arquitectura del sistema}: \texttt{x86\_64}, con soporte completo para virtualización por hardware (VT-x).
+\item \textbf{Número de núcleos detectados}: 16 (\texttt{nproc}).
 \end{itemize}
 
-\emph{The green point represents the real (ground truth) speaker position, and the black dots represent the positions of the four microphones used. The hyperbolic shapes found in the figure are consistent with the fact that the place of points with equal acoustic power value, for a given microphone pair, is a hyperbola (in our two-dimensional case, being a hyperboloid of revolution in the three-dimensional case).}
+La compilación del firmware de prueba se realizó utilizando la herramienta \texttt{riscv-gaisler-elf-gcc}, versión \texttt{ncc-v1.0.4}, y la emulación fue llevada a cabo con QEMU \texttt{8.2.50}, versión base sobre la cual se desarrollaron y validaron las modificaciones.
 
-\emph{From figure~\ref{fig:SRPvsPatternSelected}, it can clearly be seen that, again, the predictions closely match the results with real data for the different acoustic conditions, even when the simulations are using fixed and frequency independent average reflection coefficients, and that the acoustic model is based on the simplistic image method model.}
+Este entorno permitió una rápida iteración durante el desarrollo inicial de la máquina virtual y sus periféricos, así como la ejecución manual de pruebas utilizando QEMU y GDB.
 
-\input{chapters/figure-ComparisonMap} 
+\subsection*{Automatización mediante Integración Continua}
 
-\begin{wrapfigure}{r}{0.5\textwidth} 
-\vspace{-20pt}
-  \begin{center}
-    \includegraphics[width=0.4\textwidth]{Figure1}
-    \caption{Ejemplo de figura con wrapfigure.}
-    \label{fig:wrapfigure1}
-  \end{center}
-  \vspace{-20pt}
-  \vspace{1pt}
-\end{wrapfigure} 
+Tras la validación preliminar en entorno local, se configuró un pipeline de integración continua sobre \emph{GitHub Actions}, garantizando que cada nueva modificación del repositorio ejecutara automáticamente las pruebas funcionales.
 
-Otra posibilidad es utilizar el entorno \texttt{wrapfig} para hacer que el texto bordee a las figuras, como en la figura~\ref{fig:wrapfigure1}. Añado ahora unas líneas de loren ipsum para que lo veáis bien. \lipsum[1-1]
+En este entorno automatizado, se descargan e instalan las dependencias necesarias (incluyendo la toolchain NCC), se compila QEMU para \texttt{riscv32-softmmu}, y posteriormente se construyen y ejecutan los binarios de prueba (\texttt{uartTest}, \texttt{gpioTest}, \texttt{timerTest}, \texttt{uartIrqTest}), validando su salida.
 
-% \lipsum[1-4]
-% \begin{wrapfigure}{R}{5cm}
-% \centering
-% \rule{3cm}{7cm}
-% \end{wrapfigure}
-% \lipsum[1-6]
+Esta automatización permite detectar de forma temprana posibles regresiones o errores introducidos por nuevas modificaciones del código, garantizando así la estabilidad funcional de la máquina \texttt{noel-srg} en todo momento.
 
-Incluso podemos poner una tabla ``apaisada'', como en la \ref{tab:tablas2006}, donde se muestra un resumen de los resultados obtenidos en una serie de experimentos de localización de locutores.
+\vspace{1em}
+El empleo conjunto del entorno local y de la integración continua permitió cubrir tanto las necesidades de desarrollo iterativo como la validación sistemática en cada cambio del código fuente.
 
-\clearpage
-% \begin{table}[H]\centering
-\begin{sidewaystable}[hbtp]
-  \begin{center}
+\section{Prueba de UART: Loopback test}
+\label{subsec:uart-loopback}
 
-    \begin{tabular}{||l|c|c|c|c|c||}
-      \hline \hline
-      & UKA & ITC & AIT & UPC & IBM\\
-      \hline
-      \hline
-      Pcor & $57.0\pm1.4\%$ & $84.0\pm3.3\%$ & $47.0\pm3.1\%$ & $20.0\pm2.5\%$ & $67.0\pm2.9\%$ \\
-      \hline
-      Bias fine (x:y:z) [mm] & $20:-42:-75$ & $45:27:-41$ & $-27:-77:-40$ & $-59:112:52$ & $91:-69:-38$ \\
-      \hline
-      Bias fine+gross (x,y,z) [mm] & $735:-93:-258$ & $67:439:-134$ & $17:-402:-118$ & $-141:255:39$ & $474:-141:-14$ \\
-      \hline
-      AEE fine [mm] = MOTP & $210$ & $130$ & $266$ & $344$ & $228$ \\
-      \hline
-      Fine+gross [mm] & $1201$ & $632$ & $1006$ & $1188$ & $884$ \\
-      \hline
-      Loc. frames & $5035$ & $22$ & $995$ & $977$ & $1023$ \\
-      \hline
-      Ref. duration (s) & $6287.0$ & $596.0$ & $1143.0$ & $1180.0$ & $1194.0$ \\
-      \hline \hline
-    \end{tabular}
-    \caption{Resultados TEST CLEAR 2006.}
-    \label{tab:tablas2006}
-  \end{center}
-\end{sidewaystable}
-% \end{table}
+Una de las primeras pruebas desarrolladas para validar la funcionalidad básica del sistema fue un test sobre el periférico UART, empleando su modo \emph{loopback}. El objetivo principal de este test fue verificar que el flujo de datos desde la CPU hasta el periférico y su retorno al software funcionara correctamente, sin necesidad de hardware externo.
+
+\subsection*{Objetivo de la prueba}
+
+El test buscó validar los siguientes aspectos del periférico \texttt{grlib-apbuart}:
+
+\begin{itemize}
+    \item La capacidad de transmisión (\emph{TX}) y recepción (\emph{RX}) básica de la UART.
+    \item El correcto funcionamiento del modo \emph{loopback}, donde los datos transmitidos son redirigidos internamente al receptor.
+    \item La lectura correcta del registro de datos y del estado del periférico por parte del software.
+\end{itemize}
+
+\subsection*{Implementación del test}
+
+El binario del test, denominado \texttt{uartTest}, fue implementado en el archivo \texttt{kernel.c}, utilizando las funciones definidas en el módulo \texttt{uart.h}. La lógica principal del test consiste en:
+
+\begin{enumerate}
+    \item Habilitar los modos de transmisión y recepción de la UART mediante los registros de control.
+    \item Activar el modo \emph{loopback}.
+    \item Transmitir un carácter (en este caso, la letra \texttt{'X'}) utilizando la función \texttt{outchar()}.
+    \item Leer desde el registro de datos mediante \texttt{getcar()} hasta recibir un dato o agotar un contador de espera.
+    \item Comparar el carácter recibido con el transmitido:
+    \begin{itemize}
+        \item Si coinciden, imprimir por UART el mensaje \texttt{UART loopback test PASSED}.
+        \item Si no coinciden o hay timeout, imprimir un mensaje de error indicando el dato recibido.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Acceso directo a registros}
+
+La interfaz de acceso a la UART se realizó mediante una estructura que mapea los registros del periférico a una dirección fija (\texttt{0xFC001000}), siguiendo la convención GRLIB. Esto permite realizar lecturas y escrituras de bajo nivel directamente sobre los registros del hardware virtualizado.
+
+\subsection*{Importancia del test}
+
+Esta prueba es esencial porque permite validar el canal de comunicación serial básico del sistema emulado. La UART es una herramienta fundamental en sistemas embebidos, ya que es la vía principal de salida en entornos donde no existen interfaces gráficas. Además, al ejecutarse completamente en modo \emph{loopback}, no requiere dispositivos externos ni interacción manual, lo que permite su automatización dentro del pipeline de integración continua.
+
+\vspace{1em}
+\subsection*{Discusión de resultados}
+
+El resultado de la prueba confirmó el correcto funcionamiento del subsistema UART en el entorno emulado. La ejecución fue consistente a través de múltiples pruebas locales y en la automatización de la integración continua, sin que se detectaran variaciones en el comportamiento o fallos intermitentes. 
+
+Dado el carácter determinista de la prueba y la estabilidad del entorno emulado, no se consideró necesario realizar un análisis estadístico adicional. La validez de la prueba se sostiene en la reproducibilidad del resultado esperado y en la coherencia con la especificación funcional del periférico.
+
+Esta prueba constituye una validación esencial del camino básico de entrada/salida serial del sistema, sobre el cual se fundamentan tanto la interacción con el usuario como el diagnóstico en etapas posteriores del desarrollo.
+
+\section{Prueba de GPIO: validación de lectura y escritura digital}
+\label{subsec:gpio-test}
+
+El segundo componente validado fue el periférico de propósito general GPIO (\emph{General Purpose Input/Output}). Esta prueba permite verificar el correcto direccionamiento de los registros del periférico, así como el funcionamiento básico de las operaciones de escritura, lectura y configuración de dirección.
+
+\subsection*{Objetivo de la prueba}
+
+La prueba de GPIO busca confirmar los siguientes aspectos:
+
+\begin{itemize}
+    \item Configuración correcta de la dirección del pin (entrada/salida).
+    \item Escritura correcta en el registro de salida (\texttt{OUTPUT\_REG}).
+    \item Lectura confiable desde el registro de entrada (\texttt{INPUT\_REG}).
+    \item Coherencia del valor leído con el valor escrito.
+\end{itemize}
+
+\subsection*{Implementación del test}
+
+El binario \texttt{gpioTest} implementa una secuencia simple que configura el pin número 22 como salida, escribe un valor alto y bajo, y verifica mediante lectura si el cambio se refleja correctamente:
+
+\begin{enumerate}
+    \item Configura el pin 22 (\texttt{GPIO\_PIN\_MASK}) como salida mediante \texttt{gpio\_dir\_write()}.
+    \item Escribe un valor alto en el pin y verifica mediante \texttt{gpio\_read()} que el bit correspondiente esté activo.
+    \item Escribe un valor bajo y vuelve a verificar la lectura.
+    \item Si ambas comprobaciones son correctas, se imprime el mensaje \texttt{GPIO test PASSED}. En caso contrario, se reporta el fallo.
+\end{enumerate}
+
+Se introdujo una breve función de \emph{delay} mediante bucles vacíos para permitir la propagación del estado del registro y facilitar la depuración.
+
+\subsection*{Acceso a los registros del GPIO}
+
+El periférico fue mapeado en la dirección base \texttt{0xFC083000}, accediendo a sus registros mediante un puntero a memoria. La interfaz fue encapsulada en un módulo (\texttt{gpio.h} y \texttt{gpio.c}), que proporciona funciones de lectura, escritura y configuración de dirección.
+
+\subsection*{Importancia del test}
+
+La correcta operación del periférico GPIO es esencial para la emulación de interacciones básicas con hardware externo, tales como botones, switches o LEDs virtuales. Además, su prueba confirma que el mapeo de memoria y el acceso desde la CPU emulada se realizan sin errores.
+
+Al igual que el test de UART, este ejercicio puede automatizarse fácilmente en el entorno de integración continua, permitiendo detectar regresiones en el comportamiento del periférico sin intervención humana.
+
+\subsection*{Resultados de la prueba}
+
+La ejecución del binario \texttt{gpioTest} mostró el siguiente resultado en la consola de QEMU:
+
+\begin{verbatim}
+GPIO test PASSED
+\end{verbatim}
+
+Durante el proceso de validación no se detectaron discrepancias entre los valores escritos y leídos en el periférico, confirmando el correcto funcionamiento del acceso a registros y la coherencia de la configuración de dirección.
+
+\subsection*{Discusión de resultados}
+
+El test fue ejecutado repetidamente en entornos locales y dentro del pipeline de integración continua, mostrando un comportamiento estable y predecible. El acceso a los registros del GPIO a través de la emulación no presentó errores ni inconsistencias, lo que valida tanto la implementación del periférico en QEMU como la interacción del software embebido con el mismo.
+
+Dado que la prueba reproduce un flujo básico de lectura y escritura digital, su éxito representa una verificación fundamental del sistema de mapeo de memoria y del acceso programático a dispositivos. Esta validación es especialmente relevante para aplicaciones que requieran manipulación de hardware externo simulado, co
+
+\section{Prueba de temporizador: interrupciones periódicas}
+\label{subsec:timer-test}
+
+La última prueba funcional desarrollada para validar la máquina virtual \texttt{noel-srg} fue la prueba del temporizador (\emph{GPTIMER}). Esta prueba tuvo como propósito verificar el correcto funcionamiento del temporizador como generador de interrupciones periódicas, así como la correcta atención de dichas interrupciones por el núcleo de la CPU emulado.
+
+\subsection*{Objetivo de la prueba}
+
+Los objetivos de esta prueba fueron:
+
+\begin{itemize}
+    \item Configurar el temporizador para generar interrupciones periódicas.
+    \item Registrar un manejador de interrupciones (\emph{IRQ handler}) que contabilice los eventos.
+    \item Validar que las interrupciones son entregadas por el GPTIMER, enrutadas a través del PLIC, y atendidas correctamente por el firmware.
+\end{itemize}
+
+\subsection*{Implementación del test}
+
+El binario \texttt{timerTest} implementa los siguientes pasos:
+
+\begin{enumerate}
+    \item Llama a \texttt{startup()}, que configura el entorno de interrupciones:
+    \begin{itemize}
+        \item Se inicializa el PLIC y se configura el manejador de excepciones.
+        \item Se deshabilitan y luego habilitan globalmente las interrupciones.
+    \end{itemize}
+    
+    \item Habilita la UART como salida estándar.
+    
+    \item Registra como manejador de interrupciones externas la función \texttt{gptimer\_handler()} mediante \texttt{install\_irq\_handler()}.
+    
+    \item Configura el temporizador:
+    \begin{itemize}
+        \item Establece un \emph{scaler} bajo, logrando una alta frecuencia de interrupciones.
+        \item Configura un contador que provoca una interrupción tras 2 millones de ticks.
+        \item Habilita el modo de reinicio automático e interrupciones.
+    \end{itemize}
+    
+    \item Habilita las interrupciones externas mediante las instrucciones CSR correspondientes.
+    
+    \item Entra en un bucle donde espera recibir tres interrupciones, ejecutando la instrucción \texttt{wfi} (\emph{wait for interrupt}) para optimizar el consumo del CPU virtual.
+    
+    \item Una vez recibidas las tres interrupciones, imprime un mensaje confirmando el éxito de la prueba.
+\end{enumerate}
+
+El manejador \texttt{gptimer\_handler()} incrementa una variable global cada vez que es invocado y limpia el estado de la interrupción en el temporizador mediante \texttt{timer1\_clear\_pending()}.
+
+\subsection*{Manejo de interrupciones}
+
+La infraestructura de interrupciones utilizada incluye:
+
+\begin{itemize}
+    \item El temporizador GPTIMER genera una señal IRQ.
+    \item Esta señal es entregada al PLIC, que la enruta al hart activo.
+    \item El sistema operativo, a través del manejador \texttt{bare\_isr\_handle()} definido en el archivo \texttt{startup.c}, decodifica la fuente de la interrupción y llama a \texttt{irq\_dispatch()}.
+    \item Finalmente, \texttt{irq\_dispatch()} invoca al manejador previamente registrado (\texttt{gptimer\_handler()}).
+\end{itemize}
+
+\subsection*{Importancia del test}
+
+La correcta generación y gestión de interrupciones periódicas es esencial para el funcionamiento de cualquier sistema operativo o aplicación embebida que requiera temporización. Validar el funcionamiento del GPTIMER demuestra que el entorno emulado puede gestionar correctamente flujos asincrónicos de eventos, simulando el comportamiento del hardware real.
+
+Este tipo de pruebas son fundamentales para el desarrollo de planificadores (\emph{schedulers}), rutinas periódicas y otros subsistemas dependientes del tiempo.
+
+\subsection*{Resultados de la prueba}
+
+Durante la ejecución del binario \texttt{timerTest}, la salida por UART mostró la secuencia de mensajes \texttt{Tick!}, indicando que las interrupciones fueron generadas y atendidas correctamente. Al completarse el número esperado de eventos, el sistema imprimió:
+
+\begin{verbatim}
+Timer test PASSED
+\end{verbatim}
+
+Este resultado valida que el flujo completo —desde la configuración del temporizador, pasando por la generación de la interrupción, el enrutamiento a través del PLIC y la ejecución del manejador— opera correctamente en el entorno emulado.
+
+\subsection*{Discusión de resultados}
+
+Las pruebas confirmaron que el temporizador GPTIMER puede generar interrupciones periódicas confiables y que el firmware puede atenderlas mediante su infraestructura básica de control de interrupciones. El comportamiento observado fue coherente en ejecuciones repetidas y dentro del pipeline de integración continua, lo que confirma la estabilidad del modelo emulado.
+
+La verificación de este flujo es crítica en arquitecturas embebidas, ya que temporizadores como el GPTIMER suelen ser utilizados para el control del tiempo, la planificación de tareas y la ejecución periódica de rutinas en tiempo real. Esta prueba proporciona una base sólida sobre la cual desarrollar funcionalidades más complejas en sistemas multitarea o con requisitos temporales estrictos.
+
+\section{Prueba de UART con interrupciones: Loopback IRQ Test}
+\label{subsec:uart-irq-test}
+
+Como extensión del test de UART básico, se implementó una prueba adicional destinada a verificar el funcionamiento del sistema de interrupciones del periférico UART. El objetivo fue confirmar que el evento de recepción de datos genera una interrupción correctamente, que esta interrupción es enrutada mediante el PLIC, y que es atendida por el núcleo RISC-V emulado.
+
+\subsection*{Objetivo de la prueba}
+
+Los aspectos validados mediante esta prueba fueron:
+
+\begin{itemize}
+    \item Habilitación y correcto disparo de la interrupción de recepción de la UART.
+    \item Configuración del controlador de interrupciones (PLIC) para aceptar la señal del periférico UART.
+    \item Registro e invocación de un manejador (\emph{IRQ handler}) asociado a la interrupción generada.
+    \item Validación del dato recibido en el contexto del handler.
+\end{itemize}
+
+\subsection*{Implementación del test}
+
+El binario \texttt{uartIrqTest} implementa la siguiente secuencia:
+
+\begin{enumerate}
+    \item Ejecuta la rutina \texttt{startup()} que configura el entorno de interrupciones.
+    \item Habilita la transmisión y recepción de la UART.
+    \item Registra la función \texttt{uart\_rx\_handler()} como manejador para la interrupción correspondiente a la UART mediante \texttt{install\_irq\_handler()}.
+    \item Habilita la interrupción de recepción en el registro de control del periférico y desmascara su correspondiente línea en el PLIC.
+    \item Activa el modo \emph{loopback}, permitiendo que los datos enviados se reintroduzcan en el canal de recepción.
+    \item Envía el carácter de prueba (\texttt{'X'}) mediante \texttt{outchar()}.
+    \item Entra en un bucle infinito donde el procesador espera eventos mediante la instrucción \texttt{wfi}.
+\end{enumerate}
+
+Cuando el carácter transmitido es recibido por el periférico (gracias al \emph{loopback}), este genera una interrupción que es procesada por el handler \texttt{uart\_rx\_handler()}. Allí se verifica el dato recibido y se imprime el mensaje \texttt{UART irq loopback test PASSED} si la verificación es correcta. Además, la interrupción es deshabilitada tras el primer evento para evitar nuevas activaciones innecesarias.
+
+\subsection*{Flujo de interrupciones}
+
+El flujo de manejo de la interrupción es el siguiente:
+
+\begin{enumerate}
+    \item El periférico UART detecta un dato recibido y genera una interrupción.
+    \item El PLIC enruta la interrupción hacia el hart 0.
+    \item El handler global (\texttt{bare\_isr\_handle()}) decodifica el tipo de evento y llama a \texttt{irq\_dispatch()}.
+    \item Finalmente, \texttt{irq\_dispatch()} invoca al handler específico de la UART, \texttt{uart\_rx\_handler()}.
+\end{enumerate}
+
+\subsection*{Importancia del test}
+
+Este test permite validar no solo la operación básica del periférico UART, sino también la capacidad del entorno emulado para gestionar eventos asíncronos mediante interrupciones. El éxito de esta prueba confirma que el flujo completo desde la generación del evento hasta su manejo por software funciona correctamente, emulando el comportamiento esperado en una plataforma real.
+
+\subsection*{Resultados obtenidos}
+
+Durante la ejecución del test, la UART generó correctamente la interrupción tras recibir el carácter enviado en modo loopback. El manejador \texttt{uart\_rx\_handler()} procesó el evento como se esperaba, imprimiendo el mensaje de validación. Al igual que en las pruebas anteriores, no se detectaron errores ni comportamientos anómalos.
 
 
-\section{Conclusiones}
-\label{sec:conclusiones-resultados}
+\section{Automatización del testing mediante Integración Continua}
+\label{sec:ci-testing}
 
-Blah, blah, blah.
+Con el objetivo de asegurar la calidad del código y la estabilidad de la máquina \texttt{noel-srg}, se integró un pipeline de integración continua (CI) basado en \emph{GitHub Actions}. Esta automatización permite ejecutar las pruebas funcionales descritas previamente de forma automática ante cada cambio en el repositorio, detectando fallos de manera temprana en el ciclo de desarrollo.
+
+\subsection*{Estructura del pipeline}
+
+El pipeline definido en el archivo \texttt{.github/workflows/ci.yml} se ejecuta en cada \texttt{push} y \texttt{pull request}, y sigue los siguientes pasos:
+
+\begin{enumerate}
+    \item \textbf{Preparación del entorno:}
+    \begin{itemize}
+        \item Descarga del repositorio.
+        \item Inicialización del submódulo \texttt{firmware-tests}, que contiene los binarios de prueba.
+        \item Instalación de dependencias necesarias: \texttt{glib}, \texttt{pixman}, compiladores y utilidades básicas.
+    \end{itemize}
+
+    \item \textbf{Instalación de la toolchain Gaisler NCC:}
+    \begin{itemize}
+        \item Se utiliza \texttt{riscv-gaisler-elf-gcc} para compilar los binarios de prueba y \texttt{riscv-gaisler-elf-gdb} para posibles depuraciones.
+        \item La toolchain se descarga y se cachea para evitar descargas repetitivas.
+    \end{itemize}
+
+    \item \textbf{Compilación de QEMU:}
+    \begin{itemize}
+        \item Se configura QEMU para compilar exclusivamente el target \texttt{riscv32-softmmu}, habilitando el modo debug para facilitar el diagnóstico.
+    \end{itemize}
+
+    \item \textbf{Compilación de los binarios de prueba:}
+    \begin{itemize}
+        \item Se compilan los programas que ejercitan los distintos periféricos (\texttt{uartTest}, \texttt{gpioTest}, \texttt{timerTest}, \texttt{uartIrqTest}).
+    \end{itemize}
+
+    \item \textbf{Ejecución automatizada de pruebas:}
+    \begin{itemize}
+        \item Cada binario es ejecutado dentro de QEMU utilizando la máquina virtual \texttt{noel-srg}.
+        \item Se utiliza un script \texttt{runQEMU} que automatiza la ejecución de QEMU con los parámetros adecuados (\texttt{-M noel-srg}, \texttt{-nographic}, etc.).
+        \item La salida se captura en logs y se analiza mediante \texttt{grep} para detectar el mensaje de éxito.
+    \end{itemize}
+
+    \item \textbf{Validación de resultados:}
+    \begin{itemize}
+        \item Cada prueba busca la cadena \texttt{PASSED} en su correspondiente log. Si no se encuentra, la acción falla y detiene el pipeline.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Importancia de la automatización}
+
+La automatización del testing aporta numerosos beneficios al flujo de trabajo:
+
+\begin{itemize}
+    \item Permite detectar errores en etapas tempranas del desarrollo, reduciendo los costos asociados a errores tardíos.
+    \item Garantiza que los cambios futuros en el código de QEMU o en los binarios de prueba no introduzcan regresiones funcionales.
+    \item Facilita el trabajo colaborativo, dado que cada contribución es verificada automáticamente.
+    \item Mejora la trazabilidad de los fallos, al dejar un historial claro de ejecuciones exitosas y fallidas.
+\end{itemize}
+
+\vspace{1em}
+Este entorno de integración continua constituye un paso esencial hacia prácticas de desarrollo profesionalizadas en sistemas embebidos, donde la verificación continua en entornos virtualizados permite acelerar el ciclo de desarrollo y reducir la dependencia del hardware físico.
+
+\section{Conclusiones del capítulo}
+
+Las pruebas realizadas permitieron validar de manera efectiva el correcto funcionamiento de la máquina virtual \texttt{noel-srg} y sus periféricos emulados en QEMU. Cada uno de los tests ejecutados cubrió aspectos clave del sistema: comunicación serie mediante UART, manipulación digital con GPIO y gestión de interrupciones periódicas a través del temporizador.
+
+Además, la automatización de estas pruebas mediante un pipeline de integración continua permitió establecer un flujo de verificación confiable, facilitando la detección temprana de errores y asegurando la estabilidad del desarrollo a lo largo del tiempo.
+
+En conjunto, los resultados demuestran que la emulación lograda reproduce fielmente el comportamiento esperado por el software embebido, proporcionando un entorno de pruebas robusto y autónomo que elimina la necesidad de hardware físico durante las etapas iniciales del desarrollo y la validación.
 
 
-%%% Local Variables:
-%%% TeX-master: "../book"
-%%% End:

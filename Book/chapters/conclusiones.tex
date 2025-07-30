@@ -23,31 +23,71 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Conclusiones y líneas futuras}
-\label{cha:concl-y-line}
+\label{cha:conclusiones}
 
-En este apartado se resumen las conclusiones obtenidas y se proponen futuras líneas de investigación que se deriven del trabajo.
+\section{Conclusiones generales}
 
-La estructura del capítulo es...
+En este trabajo se ha demostrado que es posible extender de manera efectiva el emulador QEMU para modelar plataformas embebidas específicas basadas en RISC-V, replicando tanto la arquitectura del procesador como el comportamiento funcional de periféricos clave. A partir del desarrollo de la máquina virtual \texttt{noel-srg}, se logró emular un entorno compatible con GRLIB y NOEL-V, permitiendo la ejecución y validación de software embebido real.
 
+Uno de los logros más significativos fue integrar esta plataforma emulada dentro de un flujo automatizado de pruebas mediante integración continua. Este enfoque, habitual en el desarrollo de software general, no siempre se aplica en el ámbito embebido debido a la fuerte dependencia del hardware físico. Sin embargo, el uso de QEMU como backend de pruebas permitió ejecutar tests funcionales reproducibles, detectar regresiones de forma temprana y mantener la estabilidad del entorno en cada iteración del código.
 
-\section{Conclusiones}
-\label{sec:conclusiones}
+Además, el trabajo puso en valor el potencial del software libre y abierto en el desarrollo embebido. La posibilidad de estudiar, modificar y extender QEMU resultó fundamental para alcanzar los objetivos del proyecto, al tiempo que se alinea con buenas prácticas de transparencia, reutilización y colaboración dentro de la comunidad técnica.
 
-Para añadir una referencia a un autor, se puede utilizar el paquete \texttt{cite}. En el trabajo \cite{armani03}, se muestra un trabajo...
+En síntesis, se ha desarrollado una herramienta funcional, extensible y automatizable que reduce la necesidad de hardware durante las etapas tempranas del desarrollo embebido. Este modelo no solo contribuye a mejorar la eficiencia en entornos profesionales, sino que también abre nuevas posibilidades para la enseñanza y la experimentación en contextos académicos.
 
-Y podemos usar de nuevo algún acrónimo, como por ejemplo \ac{TDPSOLA}, o uno ya referenciado como \ac{ANN} que cambia cuando lo usas una segunda vez \ac{ANN}.
+\section{Valoración crítica y aportes del trabajo}
 
-Veamos finalmente si funciona una cita inline... al paper de Leticia \fullcite{monasterio2022}... (esto substituye la funcionalidad de bibentry...).
+Desde una perspectiva crítica, el desarrollo de este Trabajo de Fin de Grado permitió explorar con profundidad las posibilidades reales de la emulación como estrategia viable para el desarrollo de sistemas embebidos, particularmente en contextos donde el acceso a hardware físico es limitado o costoso. El trabajo no solo validó técnicamente esta hipótesis, sino que también evidenció las dificultades prácticas asociadas al modelado preciso de periféricos y a la integración de sistemas virtuales con herramientas de testing automatizado.
 
+Uno de los principales aportes del trabajo es la creación de una máquina virtual funcional y extensible basada en QEMU que replica una arquitectura inspirada en el procesador NOEL-V de Gaisler. Esta implementación permite ejecutar software real, escrito en C y compilado con la toolchain oficial de la compañía, validando el funcionamiento de periféricos como UART, GPIO y temporizadores. Al mantener compatibilidad con las estructuras internas del proyecto QEMU, se garantiza que el trabajo pueda ser mantenido, comprendido y extendido por otros desarrolladores.
 
-\section{Líneas futuras}
+Otro aporte significativo radica en la incorporación de pruebas funcionales automatizadas dentro de un entorno de integración continua (CI) mediante GitHub Actions. Esto demuestra que es posible llevar las buenas prácticas del desarrollo de software —como el testing temprano, la verificación reproducible y el análisis de regresiones— al mundo del software embebido, habitualmente más reacio a estas metodologías por su dependencia del hardware físico.
+
+En términos metodológicos, el proyecto promueve una visión moderna del desarrollo de sistemas embebidos: orientada a la reproducibilidad, centrada en herramientas libres y abierta a la colaboración. El uso de QEMU como base demuestra que el software libre no solo es útil para el aprendizaje, sino también capaz de soportar desarrollos complejos y profesionales.
+
+Finalmente, el proyecto ofrece una base técnica reutilizable para futuras implementaciones. Gracias a su diseño modular, la plataforma puede ser adaptada a otras arquitecturas basadas en GRLIB, facilitando el desarrollo de nuevas pruebas, periféricos o incluso el estudio comparativo entre configuraciones alternativas.
+
+\section{Limitaciones y aspectos mejorables}
+
+A pesar de los resultados obtenidos y de la funcionalidad alcanzada por la plataforma emulada, es importante destacar ciertas limitaciones del trabajo que podrían ser abordadas en desarrollos futuros:
+
+\begin{itemize}
+    \item \textbf{Cobertura parcial de periféricos:} Si bien se implementaron y validaron periféricos esenciales como UART, GPIO y temporizador, la máquina virtual no emula todavía todos los dispositivos disponibles en la biblioteca GRLIB. Esto limita la capacidad de ejecutar software embebido más complejo que requiera, por ejemplo, controladores de interrupciones más avanzados, buses específicos o periféricos de comunicación como SPI o I2C.
+
+    \item \textbf{Ausencia de verificación temporal precisa:} Al tratarse de una emulación funcional, el modelo no incluye un análisis exhaustivo del comportamiento temporal del sistema. Esto implica que el entorno es adecuado para validar lógica de software, pero no es aplicable a análisis de tiempo real o de rendimiento determinista, algo crítico en ciertos dominios embebidos.
+
+    \item \textbf{Modelo estático de hardware:} La máquina \texttt{noel-srg} fue diseñada con una configuración fija de dispositivos. Sería deseable, a futuro, implementar una parametrización que permita generar dinámicamente instancias de hardware personalizadas desde archivos de configuración, acercándose a una arquitectura más genérica y reutilizable.
+
+    \item \textbf{Interfaz limitada de observación y depuración:} Aunque se utilizaron logs y herramientas como \texttt{gdb} para validar el comportamiento del sistema, no se desarrollaron herramientas específicas de visualización o trazabilidad que faciliten el análisis en tiempo de ejecución.
+
+    \item \textbf{Complejidad del entorno de integración continua:} Si bien se logró automatizar la validación funcional mediante GitHub Actions, este pipeline requiere recursos computacionales relativamente elevados para compilar QEMU desde cero, lo cual puede dificultar su uso en entornos con restricciones de tiempo o hardware.
+\end{itemize}
+
+Estas limitaciones no invalidan los logros alcanzados, pero sí indican áreas donde sería valioso profundizar y robustecer la solución, especialmente si se busca escalarla a entornos industriales o integrarla en proyectos de mayor envergadura.
+
+\section{Líneas de trabajo futuras}
 \label{sec:lineas-futuras}
 
-Pues eso.
+El presente trabajo sienta las bases para el desarrollo de entornos de validación virtuales en sistemas embebidos, pero abre a su vez diversas posibilidades de mejora y expansión. A continuación, se detallan algunas líneas de trabajo que podrían abordarse en el futuro:
+
+\begin{itemize}
+    \item \textbf{Ampliación del conjunto de periféricos:} Aunque se ha logrado la emulación funcional de UART, GPIO y temporizadores, el ecosistema GRLIB incluye una variedad de periféricos adicionales (SPI, I2C, PWM, etc.) cuya integración permitiría cubrir un espectro más amplio de aplicaciones embebidas.
+
+    \item \textbf{Soporte de interrupciones complejas y DMA:} Incorporar sistemas de interrupciones más realistas y mecanismos de acceso directo a memoria (DMA) permitiría modelar comportamientos más próximos al hardware real.
+
+    \item \textbf{Extensión a arquitecturas multinúcleo:} Actualmente el entorno está orientado a una CPU simple. Adaptarlo para simular procesadores multinúcleo (como los disponibles en versiones avanzadas de NOEL-V o VexRiscv) abriría la puerta a estudios sobre concurrencia, sincronización y escalabilidad.
+
+    \item \textbf{Automatización avanzada del testing:} Si bien el sistema actual permite validar funcionalmente el entorno mediante integración continua, sería deseable incorporar pruebas de cobertura, tests de estrés y análisis de regresión para robustecer el ciclo de pruebas.
+
+    \item \textbf{Pruebas comparativas con hardware real:} Ejecutar los mismos binarios en una placa real basada en NOEL-V y comparar los resultados con la emulación ayudaría a evaluar el grado de fidelidad del entorno virtual y detectar posibles inconsistencias.
+
+    \item \textbf{Contribución oficial al repositorio de QEMU:} Mejorar la documentación, estilo y mantenibilidad del código implementado con el objetivo de presentar un \emph{pull request} al repositorio oficial de QEMU. Esto favorecería su adopción por parte de la comunidad y garantizaría su mantenimiento a largo plazo.
+
+    \item \textbf{Documentación ampliada y guía para nuevos desarrolladores:} Una mejora en la documentación técnica del entorno, incluyendo ejemplos, diagramas y guías paso a paso, facilitaría su adopción por parte de nuevos usuarios o instituciones educativas.
+\end{itemize}
+
+Estas posibles líneas de desarrollo buscan aprovechar la modularidad del sistema creado y su integración con herramientas abiertas, extendiendo su utilidad en ámbitos académicos, industriales y colaborativos.
 
 
-%%% Local Variables:
-%%% TeX-master: "../book"
-%%% End:
 
 
