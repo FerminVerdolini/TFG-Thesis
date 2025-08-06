@@ -34,14 +34,12 @@
 
 \addcontentsline{toc}{chapter}{Resumen}
 
-Este documento ha sido generado con una plantilla para memorias de
-trabajos fin de carrera, fin de máster, fin de grado y tesis
-doctorales. Está especialmente pensado para su uso en la Universidad de
-Alcalá, pero debería ser fácilmente extensible y adaptable a otros casos
-de uso. En su contenido se incluyen las instrucciones generales para
-usarlo, así como algunos ejemplos de elementos que pueden ser de
-utilidad. Si tenéis problemas, sugerencias o comentarios sobre el mismo,
-dirigidlas por favor a \contactauthor.
+Este trabajo presenta el diseño e implementación de una plataforma de emulación para sistemas embebidos basada en QEMU, orientada a replicar una arquitectura compatible con el procesador \texttt{NOEL-V} de Gaisler, una implementación RISC-V de propósito general. Se desarrolló una máquina virtual funcional denominada \texttt{noel-srg}, que emula periféricos básicos como UART, GPIO y temporizadores, permitiendo ejecutar software embebido real compilado con la toolchain oficial.
+
+Además del desarrollo del modelo, se diseñaron pruebas funcionales automatizadas integradas en un pipeline de integración continua utilizando GitHub Actions. Este enfoque permite validar el entorno emulado sin hardware físico, facilitando la detección de errores y asegurando la estabilidad del sistema a lo largo del tiempo.
+
+El proyecto demuestra la viabilidad del uso de emulación como herramienta educativa y profesional en el ámbito embebido, y destaca el valor del software libre como base para desarrollos flexibles, reproducibles y colaborativos. Se plantea también una serie de mejoras y líneas futuras, como la ampliación del conjunto de periféricos, el soporte para arquitecturas multinúcleo y la eventual integración del código desarrollado al repositorio oficial de QEMU.
+
 
 \textbf{Palabras clave:} \myThesisKeywords.
 

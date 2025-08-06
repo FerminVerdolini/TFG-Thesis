@@ -69,20 +69,20 @@ En definitiva, QEMU ha trascendido su papel original como emulador para converti
 
 La emulación de hardware mediante herramientas como QEMU ha dejado de ser un recurso limitado a laboratorios académicos o pruebas aisladas, para convertirse en un componente esencial dentro del ciclo de vida del software embebido. En la actualidad, QEMU se emplea activamente tanto en entornos de investigación como en procesos industriales, cumpliendo un rol central en el desarrollo temprano, la validación funcional y la automatización de pruebas.
 
-El auge de arquitecturas abiertas como RISC-V, sumado a la creciente complejidad de los SoCs modernos, ha impulsado la adopción de plataformas virtualizadas como medio para reducir la dependencia del hardware físico y acelerar los ciclos de desarrollo. La emulación permite validar periféricos, probar sistemas operativos, depurar errores y realizar regresiones en múltiples configuraciones de hardware desde entornos reproducibles y automatizables \cite{jiang2021ecmo}.
+El auge de arquitecturas abiertas como RISC-V, sumado a la creciente complejidad de los SoCs modernos, ha impulsado la adopción de plataformas virtualizadas como medio para reducir la dependencia del hardware físico y acelerar los ciclos de desarrollo. La emulación permite validar periféricos, probar sistemas operativos, depurar errores y realizar regresiones en múltiples configuraciones de hardware desde entornos reproducibles y automatizables .
 
 A continuación, se presentan ejemplos representativos que ilustran las capacidades actuales de QEMU:
 
 \begin{itemize}
-    \item \textbf{Sistemas DAQ embebidos (Zabołotny, 2021–2022):} Se empleó QEMU para validar de forma simultánea el firmware FPGA, el controlador de kernel en Linux y la aplicación de usuario, facilitando el desarrollo iterativo de sistemas de adquisición de datos sin requerir tarjetas físicas PCIe \cite{zabolotny2021daq}.
+    \item \textbf{Sistemas DAQ embebidos (Zabołotny, 2021–2022):} Se empleó QEMU para validar de forma simultánea el firmware FPGA, el controlador de kernel en Linux y la aplicación de usuario, facilitando el desarrollo iterativo de sistemas de adquisición de datos sin requerir tarjetas físicas PCIe .
     
-    \item \textbf{Plataformas MIPS64 embebidas (Mehmood et al., 2016):} QEMU fue extendido para emular Octeon, una arquitectura MIPS64 utilizada en sistemas embebidos, demostrando que la emulación puede alcanzar desempeños comparables al hardware real durante las etapas iniciales del desarrollo \cite{mehmood2016mips64}.
+    \item \textbf{Plataformas MIPS64 embebidas (Mehmood et al., 2016):} QEMU fue extendido para emular Octeon, una arquitectura MIPS64 utilizada en sistemas embebidos, demostrando que la emulación puede alcanzar desempeños comparables al hardware real durante las etapas iniciales del desarrollo.
     
-    \item \textbf{Rehosting de firmware embebido (Jiang et al., 2021):} Se desarrolló una técnica para reemplazar periféricos reales por equivalentes virtuales compatibles, permitiendo ejecutar imágenes Linux embebidas originales dentro de QEMU. Esta técnica, conocida como \emph{trasplante de periféricos}, alcanzó una tasa de éxito del 87\% en más de 800 firmwares \cite{jiang2021ecmo}.
+    \item \textbf{Rehosting de firmware embebido (Jiang et al., 2021):} Se desarrolló una técnica para reemplazar periféricos reales por equivalentes virtuales compatibles, permitiendo ejecutar imágenes Linux embebidas originales dentro de QEMU. Esta técnica, conocida como \emph{trasplante de periféricos}, alcanzó una tasa de éxito del 87\% en más de 800 firmwares .
     
-    \item \textbf{Emulación de SoCs IoT (Osman, 2020):} El SoC nRF51 fue emulado exitosamente en QEMU, ejecutando sistemas operativos como Zephyr. Aunque con ciertas limitaciones temporales, la velocidad y funcionalidad fueron suficientes para validar aplicaciones embebidas IoT \cite{osman2020iot}.
+    \item \textbf{Emulación de SoCs IoT (Osman, 2020):} El SoC nRF51 fue emulado exitosamente en QEMU, ejecutando sistemas operativos como Zephyr. Aunque con ciertas limitaciones temporales, la velocidad y funcionalidad fueron suficientes para validar aplicaciones embebidas IoT.
     
-    \item \textbf{Sistemas críticos y virtualización (Cinque et al., 2021):} En entornos aeroespaciales y automotrices, QEMU se ha empleado como base para pruebas certificables, habilitando aislamiento funcional y validación de componentes críticos sin acceso al hardware final \cite{cinque2021critical}.
+    \item \textbf{Sistemas críticos y virtualización (Cinque et al., 2021):} En entornos aeroespaciales y automotrices, QEMU se ha empleado como base para pruebas certificables, habilitando aislamiento funcional y validación de componentes críticos sin acceso al hardware final.
 \end{itemize}
 
 \vspace{1em}
@@ -94,19 +94,19 @@ El auge de la arquitectura RISC-V, impulsado por su naturaleza abierta y modular
 
 \subsection*{CI para verificación funcional en RISC-V: Proyecto Caliptra}
 
-Antmicro, en colaboración con Google y otras compañías del consorcio CHIPS Alliance, implementó un pipeline de CI para validar de forma continua el núcleo VeeR de RISC-V dentro del proyecto Caliptra, utilizado en soluciones de raíz de confianza por empresas como AMD, Microsoft y NVIDIA. Esta infraestructura ejecuta pruebas funcionales y de cobertura RTL en cada commit, sobre múltiples configuraciones del core (EH1, EH2, EL2), garantizando estabilidad, seguridad y mantenibilidad del hardware \cite{antmicro_caliptra}.
+Antmicro, en colaboración con Google y otras compañías del consorcio CHIPS Alliance, implementó un pipeline de CI para validar de forma continua el núcleo VeeR de RISC-V dentro del proyecto Caliptra, utilizado en soluciones de raíz de confianza por empresas como AMD, Microsoft y NVIDIA. Esta infraestructura ejecuta pruebas funcionales y de cobertura RTL en cada commit, sobre múltiples configuraciones del core (EH1, EH2, EL2), garantizando estabilidad, seguridad y mantenibilidad del hardware.
 
 \subsection*{Testing de Linux RISC-V en CI con hardware real y virtual}
 
-En Codethink, se desarrolló un pipeline de CI sobre GitLab que combina la emulación en QEMU con despliegue automático sobre hardware real (placas SiFive Unmatched). Se utilizan herramientas como LAVA y OpenQA para validar el arranque, login y funcionamiento básico de una imagen Linux construida para RISC-V, asegurando que las modificaciones en el kernel o el entorno de usuario no introduzcan regresiones \cite{codethink_ci}.
+En Codethink, se desarrolló un pipeline de CI sobre GitLab que combina la emulación en QEMU con despliegue automático sobre hardware real (placas SiFive Unmatched). Se utilizan herramientas como LAVA y OpenQA para validar el arranque, login y funcionamiento básico de una imagen Linux construida para RISC-V, asegurando que las modificaciones en el kernel o el entorno de usuario no introduzcan regresiones.
 
 \subsection*{Pruebas automatizadas de RTOS y firmware}
 
-Proyectos como Apache NuttX emplean QEMU dentro de pipelines CI para validar binarios de firmware embebido. En cada ejecución, el sistema arranca una imagen y analiza su salida para detectar errores de acceso a memoria, fallos de segmentación o comportamiento incorrecto, todo ello sin necesidad de hardware físico \cite{apache_nuttx}.
+Proyectos como Apache NuttX emplean QEMU dentro de pipelines CI para validar binarios de firmware embebido. En cada ejecución, el sistema arranca una imagen y analiza su salida para detectar errores de acceso a memoria, fallos de segmentación o comportamiento incorrecto, todo ello sin necesidad de hardware físico .
 
 \subsection*{Adopción comunitaria en entornos profesionales}
 
-Foros y espacios técnicos de desarrollo embebido (como Reddit r/embedded) reflejan una adopción generalizada de QEMU como entorno de pruebas unitarias y de integración. Muchas compañías y desarrolladores independientes emplean GitHub Actions o Jenkins junto con QEMU para ejecutar baterías de tests en CI, simulando arquitecturas RISC-V, ARM o MIPS. En ocasiones, estos entornos se complementan con hardware real conectado mediante runners personalizados, permitiendo una validación híbrida \cite{reddit_ci}.
+Foros y espacios técnicos de desarrollo embebido (como Reddit r/embedded) reflejan una adopción generalizada de QEMU como entorno de pruebas unitarias y de integración. Muchas compañías y desarrolladores independientes emplean GitHub Actions o Jenkins junto con QEMU para ejecutar baterías de tests en CI, simulando arquitecturas RISC-V, ARM o MIPS. En ocasiones, estos entornos se complementan con hardware real conectado mediante runners personalizados, permitiendo una validación híbrida.
 
 \vspace{1em}
 En conjunto, estos casos confirman que el uso de QEMU en CI ha trascendido el ámbito experimental. Hoy es una herramienta central en procesos DevOps aplicados a sistemas embebidos, ofreciendo una base sólida para la validación funcional de arquitecturas abiertas como RISC-V, con beneficios concretos en tiempo de desarrollo, reproducibilidad y robustez del software.

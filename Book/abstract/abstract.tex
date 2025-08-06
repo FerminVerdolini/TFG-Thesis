@@ -33,13 +33,11 @@
 
 \addcontentsline{toc}{chapter}{Abstract}
 
-This document has been generated with a template for Bsc and Msc Thesis
-(trabajos fin de carrera, fin de máster, fin de grado) and PhD. Thesis,
-specially thought for its use in Universidad de Alcalá, although it
-should be easily extended and adapted for other use cases. In its
-content we include general instructions of use, and some example of
-elements than can be useful. If you have problemas, suggestions or
-comments on the template, please forward them to \contactauthor.
+This project presents the design and implementation of an emulation platform for embedded systems based on QEMU, targeting a system architecture compatible with the \texttt{NOEL-V} processor from Gaisler, a general-purpose RISC-V implementation. A functional virtual machine, named \texttt{noel-srg}, was developed to emulate essential peripherals such as UART, GPIO, and timers, enabling the execution of real embedded software compiled with the official toolchain.
+
+In addition to developing the model, automated functional tests were created and integrated into a continuous integration pipeline using GitHub Actions. This setup allows validating the emulated environment without physical hardware, helping detect errors and ensure system stability over time.
+
+The project demonstrates the feasibility of emulation as both an educational and professional tool in embedded development, and highlights the value of free software as a foundation for flexible, reproducible, and collaborative solutions. Future work includes expanding peripheral support, enabling multicore simulation, and preparing the code for potential contribution to the official QEMU repository.
 
 
 \textbf{Keywords:} \myThesisKeywordsEnglish.
