@@ -1,119 +1,330 @@
-%%
-%% $Id: biblio.bib,v 1.7 2015/03/18 09:43:08 macias Exp $
-%%
 
-@article{mehmood_mips64_2016,
-  title={Emulating the Cavium Octeon MIPS64 Architecture Using QEMU},
-  author={Mehmood, Tahir and others},
-  journal={IEEE Embedded Systems Letters},
-  volume={8},
-  number={3},
-  pages={65--68},
-  year={2016},
-  doi={10.1109/LES.2016.2586498}
+@manual{qemu,
+  title        = {QEMU: The Fast Processor Emulator},
+  author       = {Fabrice Bellard and the QEMU Project},
+  year         = {2023},
+  url          = {https://www.qemu.org/},
+  note         = {Accedido: 2025-08-18}
 }
 
+@inproceedings{waterman2011riscv,
+  title        = {The RISC-V instruction set manual, volume I: User-level ISA},
+  author       = {Waterman, Andrew and Asanovi{\'c}, Krste},
+  year         = {2011},
+  institution  = {EECS Department, University of California, Berkeley},
+  url          = {https://riscv.org/specifications/}
+}
 
-@manual{grlib_ip_core_user_manual,
-  title = {GRLIB IP Core User’s Manual},
-  author = {Frontgrade Gaisler AB},
+@manual{gaisler-noelv,
+  title        = {NOEL-V Processor User Manual},
+  author       = {Cobham Gaisler},
+  year         = {2022},
+  url          = {https://www.gaisler.com/products/noel-v/},
+  note         = {Accedido: 2025-08-18}
+}
+
+@manual{grlib,
+  title        = {GRLIB IP Core User's Manual},
+  author       = {Cobham Gaisler},
+  year         = {2022},
+  url          = {https://www.gaisler.com/products/grlib/},
+  note         = {Accedido: 2025-08-18}
+}
+
+@inproceedings{zabolotny2021qemu,
+  title        = {Using QEMU-based co-simulation for embedded systems verification},
+  author       = {Zabo{\l}otny, Wojciech M.},
+  booktitle    = {2021 24th International Symposium on Design and Diagnostics of Electronic Circuits \& Systems (DDECS)},
+  pages        = {157--162},
+  year         = {2021},
+  organization = {IEEE},
+  doi          = {10.1109/DDECS52668.2021.9417080}
+}
+
+@inproceedings{cinque2021qemu,
+  title        = {Assessing the use of QEMU for dependability evaluation of critical systems},
+  author       = {Cinque, Marcello and Cotroneo, Domenico and others},
+  booktitle    = {2021 IEEE International Symposium on Software Reliability Engineering Workshops (ISSREW)},
+  pages        = {229--236},
+  year         = {2021},
+  organization = {IEEE},
+  doi          = {10.1109/ISSREW53611.2021.00060}
+}
+
+@misc{githubactions,
+  title        = {GitHub Actions Documentation},
+  author       = {{GitHub, Inc.}},
+  year         = {2025},
+  url          = {https://docs.github.com/en/actions},
+  note         = {Accedido: 2025-08-18}
+}
+
+@misc{embedded_sim_vs_emul,
+  title = {Simulation vs Emulation},
+  author = {Embedded System Design Module},
+  howpublished = {Gitbook},
   year = {2025},
-  note = {Último acceso: junio de 2025},
-  url = {https://download.gaisler.com/products/GRLIB/doc/grip.pdf}
+  url = {https://zshujon.gitbook.io/embedded-system-design/module-06},
+  note = {Accedido: 2025-08-18}
 }
 
-@misc{riscv_priv_spec,
-  title = {The RISC-V Privileged Architecture Specification},
-  author = {RISC-V Foundation},
-  year = {2021},
-  note = {Último acceso: junio de 2025},
-  url = {https://github.com/riscv/riscv-isa-manual}
+@misc{virtualization_wikipedia,
+  title = {Virtualization},
+  author = {{Wikipedia contributors}},
+  howpublished = {Wikipedia},
+  year = {2025},
+  note = {Accedido: 2025-08-18},
+  url = {https://en.wikipedia.org/wiki/Virtualization}
 }
 
-@misc{qemu_docs_master,
-  title = {{QEMU Documentation (master branch)}},
-  howpublished = {\url{https://www.qemu.org/docs/master/}},
-  note = {Último acceso: junio de 2025}
+@misc{emul_vs_virtualization_eureka,
+  title = {Emulation vs virtualization: Theoretical boundaries and implementations},
+  author = {Eureka by PatSnap},
+  year = {2025},
+  url = {https://eureka.patsnap.com/article/emulation-vs-virtualization-theoretical-boundaries-and-implementations},
+  note = {Accedido: 2025-08-18}
 }
 
+@misc{qemu_wikipedia,
+  title = {QEMU},
+  author = {{Wikipedia contributors}},
+  howpublished = {Wikipedia},
+  year = {2025},
+  url = {https://en.wikipedia.org/wiki/QEMU},
+  note = {Accedido: 2025-08-18}
+}
+
+@article{guo2019fast,
+  title = {Fast TLB Simulation for RISC-V Systems},
+  author = {Guo, Xuan and Mullins, Robert},
+  journal = {arXiv preprint arXiv:1905.06825},
+  year = {2019}
+}
+
+@article{vizcaino2024rave,
+  title = {RAVE: RISC-V Analyzer of Vector Executions, a QEMU tracing plugin},
+  author = {Vizcaíno, Pablo and Mantovani, Filippo and Labarta, Jesús and Ferrer, Roger},
+  journal = {arXiv preprint arXiv:2409.13639},
+  year = {2024}
+}
+
+@misc{riscv_wikipedia,
+  title = {RISC-V},
+  author = {{Wikipedia contributors}},
+  howpublished = {Wikipedia},
+  year = {2025},
+  url = {https://en.wikipedia.org/wiki/RISC-V},
+  note = {Accedido: 2025-08-18}
+}
+
+@article{zabolotny2022daq,
+  title        = {QEMU-based hardware/software co-development for DAQ systems},
+  author       = {Zabo{\l}otny, Wojciech M.},
+  journal      = {Journal of Instrumentation},
+  year         = {2022},
+  doi          = {10.1088/1748-0221/17/04/C04004},
+  note         = {Preprint available as arXiv:2109.14735}
+}
+
+@inproceedings{qbox2016,
+  title        = {{QBox}: an industrial solution for virtual platform simulation using QEMU and SystemC TLM-2.0},
+  author       = {Delbergue, Guillaume and Burton, Mark and Konrad, Frederic and Le Gal, Bertrand and Jego, Christophe},
+  booktitle    = {8th European Congress on Embedded Real Time Software and Systems (ERTS 2016)},
+  year         = {2016},
+  note         = {Disponible en HAL}
+}
+
+@article{jiang2021ecmo,
+  title        = {ECMO: Peripheral Transplantation to Rehost Embedded Linux Kernels},
+  author       = {Jiang, Muhui and Ma, Lin and Zhou, Yajin and Liu, Qiang and Zhang, Cen and Wang, Zhi and Luo, Xiapu and Wu, Lei and Ren, Kui},
+  journal      = {Proceedings of the 2021 ACM SIGSAC Conference on Computer and Communications Security},
+  year         = {2021},
+  doi          = {10.1145/3460120.3484753}
+}
+
+@inproceedings{mehmood2016octeon,
+  title        = {Emulating an Octeon MIPS64 based embedded system on x86 in QEMU},
+  author       = {Mehmood, M. A. and Ain, Q. U. and Akram, A. and Qadeer, A. and Waheed, A.},
+  booktitle    = {2016 19th International Multi-Topic Conference (INMIC)},
+  year         = {2016},
+  pages        = {1--7},
+  organization = {IEEE}
+}
+
+@mastersthesis{osman2020nrf51,
+  title        = {Emulating the Internet of Things with QEMU},
+  author       = {Osman, Gyokan O.},
+  year         = {2020},
+  school       = {Chalmers University of Technology},
+  note         = {Master's thesis; evaluation of QEMU platform for nRF51, including execution of Zephyr and performance comparison with hardware}
+}
+
+@misc{chipsalliance_caliptra_ci,
+  title        = {Open source and CI-driven RTL testing and verification for Caliptra's VeeR},
+  howpublished = {Chips Alliance blog post},
+  year         = {2023},
+}
+
+@inproceedings{riscv_summit_veer_ci,
+  title        = {Enabling Collaborative Chip Design in the RISC-V VeeR Core and Caliptra RoT Project with CHIPS Alliance tools},
+  author       = {Gugala, Karol and Cockrell, Matt},
+  booktitle    = {RISC-V Summit Europe},
+  year         = {2023},
+  note         = {Presentation with details on CI infrastructure for VeeR},
+}
+
+@misc{codethink_riscv_kernel_ci,
+  title        = {Automated Kernel Testing on RISC-V Hardware},
+  author       = {Codethink Team},
+  year         = {2023},
+  howpublished = {Codethink blog post},
+}
+
+@misc{codethink_testing_in_box,
+  title        = {Testing in a Box: Streamlining Embedded Systems Testing},
+  author       = {Codethink Team},
+  year         = {2023},
+  howpublished = {Codethink blog post},
+}
+
+@misc{rise_riscv_ci,
+  title        = {Working with Igalia to improve RISC-V LLVM Continuous Integration},
+  author       = {{RISE Project}},
+  year         = {2024},
+  howpublished = {Rise Project blog},
+}
+
+@manual{gdb,
+  title        = {GDB: The GNU Project Debugger},
+  author       = {Free Software Foundation},
+  year         = {2023},
+  url          = {https://www.gnu.org/software/gdb/},
+  note         = {Accedido: 2025-08-18}
+}
+
+@manual{git,
+  title        = {Git Documentation},
+  author       = {The Git Development Community},
+  year         = {2023},
+  url          = {https://git-scm.com/doc},
+  note         = {Accedido: 2025-08-18}
+}
+
+@inproceedings{bellard2005qemu,
+  author    = {Fabrice Bellard},
+  title     = {{QEMU}, a Fast and Portable Dynamic Translator},
+  booktitle = {Proceedings of the USENIX Annual Technical Conference, FREENIX Track},
+  year      = {2005},
+  pages     = {41--46},
+  publisher = {USENIX Association},
+  url       = {https://www.usenix.org/legacy/events/usenix05/tech/freenix/bellard.html}
+}
+
+@manual{qemu_devel_docs,
+  title        = {QEMU Developer Documentation},
+  organization = {QEMU Project},
+  year         = {2024},
+  note         = {Disponible en \url{https://www.qemu.org/docs/master/devel/}}
+}
+
+@inproceedings{qom2012,
+  title={QOM: an object model for QEMU},
+  author={Peter Maydell and Anthony Liguori},
+  booktitle={KVM Forum},
+  year={2012}
+}
 
 @manual{qemu_coding_style,
-  title = {QEMU Coding Style Guidelines},
-  organization = {QEMU Project},
-  year = {2025},
-  note = {Último acceso: junio de 2025},
-  url = {https://www.qemu.org/docs/master/devel/style.html}
-}
-
-@article{MdpI2021QEMU,
-  author = {{U-Boot Developers}},
-  title = {Enabling Parallelized-QEMU for Hardware/Software Co-Simulation Virtual Platforms},
-  journal = {MDPI},
-  year = {2021},
-  url = {https://www.mdpi.com/2079-9292/10/6/759},
-  note = {Consultado el 6 de agosto de 2025}
-}
-
-@online{QEMUTestingCI,
-  author = {{QEMU Project Developers}},
-  title = {Continuous Integration (CI) -- QEMU documentation},
-  year = {2025},
-  url = {https://www.qemu.org/docs/master/devel/testing/ci.html},
-  urldate = {2025-08-06},
-  organization = {QEMU Project},
-  note = {Consultado el 6 de agosto de 2025}
-}
-
-@manual{GaislerNOELV,
-  author = {{Gaisler}},
-  title = {NOEL-V},
-  year = {2025},
-  url = {https://www.gaisler.com/products/noel-v},
-  note = {Consultado el 6 de agosto de 2025}
-}
-
-@manual{GaislerGRLIBUser,
-  author = {{Gaisler}},
-  title = {GRLIB IP Library User's Manual},
-  year = {2025},
-  url = {https://download.gaisler.com/products/GRLIB/doc/grlib.pdf},
-  note = {Consultado el 6 de agosto de 2025}
-}
-
-@online{QEMURISCVdocs,
-  author = {{QEMU Project Developers}},
-  title = {RISC-V System emulator -- QEMU documentation},
-  year = {2025},
-  url = {https://www.qemu.org/docs/master/system/target-riscv.html},
-  urldate = {2025-08-06},
-  organization = {QEMU Project},
-  note = {Consultado el 6 de agosto de 2025}
-}
-
-@online{architecnologiaRISCV,
-  author = {{ArchiTecnologia}},
-  title = {QEMU: Cómo emular RISC-V en Linux},
+  title = {QEMU Coding Style},
+  author = {QEMU Project},
   year = {2024},
-  url = {https://architecnologia.es/qemu-como-emular-risc-v-linux},
-  urldate = {2025-08-06},
-  note = {Consultado el 6 de agosto de 2025}
+  note = {Disponible en \url{https://qemu-project.gitlab.io/qemu/devel/style.html}}
 }
 
-@online{CodethinkQEMU,
-  author = {Stonier, Will and Hunter, Lawrence},
-  title = {Speed Up Embedded Software Testing with QEMU},
+@manual{qemu_submitting_patches,
+  title = {Submitting a Patch},
+  author = {QEMU Project},
   year = {2024},
-  url = {https://www.codethink.co.uk/articles/2024/qemu-testing-embedded-linux/},
-  urldate = {2025-08-06},
-  organization = {Codethink},
-  note = {Consultado el 6 de agosto de 2025}
+  note = {Disponible en \url{https://www.qemu.org/docs/master/devel/submitting-a-patch.html}}
 }
 
-@online{YTzcqJHKUKipg,
-  author = {{Veronica Explains}},
-  title = {OS16: Testing QEMU in CI/CD Using Pytest},
-  year = {2022},
-  url = {https://www.youtube.com/watch?v=zcqJHKUKipg},
-  urldate = {2025-08-06},
-  note = {Video de YouTube. Consultado el 6 de agosto de 2025}
+@manual{linux_coding_style,
+  title        = {Linux Kernel Coding Style},
+  author       = {Linux Kernel Community},
+  year         = {2023},
+  note         = {Disponible en \url{https://www.kernel.org/doc/html/latest/process/coding-style.html}}
 }
+
+@misc{qemu_virt_riscv,
+  title        = {‘virt’ Generic Virtual Platform (virt) — QEMU RISC-V System Emulator},
+  author       = {QEMU Project},
+  year         = {2025},
+  note         = {Disponible en \url{https://www.qemu.org/docs/master/system/riscv/virt.html}}
+}
+
+@misc{qemu_system_emulation,
+  title        = {System Emulation — QEMU Documentation},
+  author       = {QEMU Project},
+  year         = {2025},
+  note         = {Disponible en \url{https://www.qemu.org/docs/master/system/index.html}}
+}
+
+@misc{qemu_grlib_apbuart,
+  title        = {QEMU: GRLIB APBUART Device Implementation},
+  author       = {{QEMU Project Contributors}},
+  year         = {2023},
+  howpublished = {\url{https://gitlab.boonchuy.com/macemu/qemu/-/blob/56a60dd6d619877e9957ba06b92d2f276e3c229d/hw/grlib_apbuart.c}},
+}
+
+@misc{qemu_aclint_source,
+  title        = {QEMU ACLINT Device Implementation (riscv\_aclint.c)},
+  author       = {{QEMU Project Contributors}},
+  year         = {2025},
+  howpublished = {\url{https://gitlab.com/qemu-project/qemu/-/blob/master/hw/intc/riscv_aclint.c}},
+}
+
+@misc{qemu_riscv_virt_devices,
+  title        = {RISC-V ‘virt’ Machine Devices — QEMU Documentation},
+  author       = {QEMU Project},
+  year         = {2025},
+}
+
+%%
+
+% @manual{qemu, title = {QEMU: The Fast Processor Emulator}}
+% @inproceedings{waterman2011riscv, title = {The RISC-V instruction set manual, volume I: User-level ISA}}
+% @manual{gaisler-noelv, title = {NOEL-V Processor User Manual}}
+% @manual{grlib, title = {GRLIB IP Core User's Manual}}
+% @inproceedings{zabolotny2021qemu, title = {Using QEMU-based co-simulation for embedded systems verification}}
+% @inproceedings{cinque2021qemu, title = {Assessing the use of QEMU for dependability evaluation of critical systems}}
+% @misc{githubactions, title = {GitHub Actions Documentation}}
+% @misc{embedded_sim_vs_emul, title = {Simulation vs Emulation}}
+% @misc{virtualization_wikipedia, title = {Virtualization}}
+% @misc{emul_vs_virtualization_eureka, title = {Emulation vs virtualization: Theoretical boundaries and implementations}}
+% @misc{qemu_wikipedia, title = {QEMU}}
+% @article{guo2019fast, title = {Fast TLB Simulation for RISC-V Systems}}
+% @article{vizcaino2024rave, title = {RAVE: RISC-V Analyzer of Vector Executions, a QEMU tracing plugin}}
+% @misc{riscv_wikipedia, title = {RISC-V}}
+% @article{zabolotny2022daq, title = {QEMU-based hardware/software co-development for DAQ systems}}
+% @inproceedings{qbox2016, title = {QBox: an industrial solution for virtual platform simulation using QEMU and SystemC TLM-2.0}}
+% @article{jiang2021ecmo, title = {ECMO: Peripheral Transplantation to Rehost Embedded Linux Kernels}}
+% @inproceedings{mehmood2016octeon, title = {Emulating an Octeon MIPS64 based embedded system on x86 in QEMU}}
+% @mastersthesis{osman2020nrf51, title = {Emulating the Internet of Things with QEMU}}
+% @misc{chipsalliance_caliptra_ci, title = {Open source and CI-driven RTL testing and verification for Caliptra's VeeR}}
+% @inproceedings{riscv_summit_veer_ci, title = {Enabling Collaborative Chip Design in the RISC-V VeeR Core and Caliptra RoT Project with CHIPS Alliance tools}}
+% @misc{codethink_riscv_kernel_ci, title = {Automated Kernel Testing on RISC-V Hardware}}
+% @misc{codethink_testing_in_box, title = {Testing in a Box: Streamlining Embedded Systems Testing}}
+% @misc{rise_riscv_ci, title = {Working with Igalia to improve RISC-V LLVM Continuous Integration}}
+% @manual{gdb, title = {GDB: The GNU Project Debugger}}
+% @manual{git, title = {Git Documentation}}
+% @inproceedings{bellard2005qemu, title = {{QEMU}, a Fast and Portable Dynamic Translator}}
+% @manual{qemu_devel_docs, title = {QEMU Developer Documentation}}
+% @inproceedings{qom2012, title = {QOM: an object model for QEMU},}
+% @manual{qemu_coding_style, title = {QEMU Coding Style Guidelines}}
+% @manual{qemu_submitting_patches, title = {Submitting a Patch to QEMU},}
+% @manual{linux_coding_style, title = {Linux Kernel Coding Style},}
+% @misc{qemu_virt_riscv, title = {‘virt’ Generic Virtual Platform (virt) — QEMU RISC-V System Emulator}}
+% @misc{qemu_system_emulation, title = {System Emulation — QEMU Documentation}}
+% @misc{qemu_grlib_apbuart, title = {QEMU: GRLIB APBUART Device Implementation}}
+% @misc{qemu_aclint_source, title = {QEMU ACLINT Device Implementation (riscv\_aclint.c)}}
+% @misc{qemu_riscv_virt_devices, title = {RISC-V ‘virt’ Machine Devices — QEMU Documentation}}

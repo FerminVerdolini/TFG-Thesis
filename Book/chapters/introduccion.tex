@@ -25,68 +25,119 @@
 \chapter{Introducción}
 \label{cha:introduccion}
 
-El desarrollo de sistemas embebidos modernos presenta crecientes desafíos vinculados con la validación temprana del software, la integración con hardware personalizado y la necesidad de mantener ciclos de desarrollo ágiles y confiables. En este contexto, el uso de herramientas de emulación y virtualización se ha vuelto fundamental para abordar estas problemáticas, permitiendo simular entornos completos de ejecución sin necesidad de contar con el hardware físico desde las primeras etapas del desarrollo.
+El desarrollo de sistemas embebidos modernos presenta crecientes desafíos vinculados con la validación temprana del software,
+la integración con hardware personalizado y la necesidad de mantener ciclos de desarrollo ágiles y confiables. En este contexto,
+el uso de herramientas de emulación y virtualización se ha vuelto fundamental para abordar estas problemáticas,
+permitiendo simular entornos completos de ejecución sin necesidad de contar con el hardware físico desde las primeras etapas del desarrollo.
 
-Este trabajo se enmarca en esa problemática, proponiendo la extensión de una plataforma de emulación basada en QEMU para incorporar soporte funcional a una arquitectura de sistema embebido concreta: la máquina \texttt{NOEL-V} desarrollada por Gaisler para aplicaciones aeroespaciales, se basa en el estándar abierto RISC-V y se integra con la biblioteca GRLIB, ampliamente utilizada en sistemas críticos.
+Este trabajo se enmarca en esa problemática, proponiendo la extensión de una plataforma de emulación basada en QEMU
+para incorporar soporte funcional a una arquitectura de sistema embebido concreta: la máquina \texttt{NOEL-V} desarrollada por Gaisler
+para aplicaciones aeroespaciales, se basa en el estándar abierto RISC-V y se integra con la biblioteca GRLIB, ampliamente utilizada en sistemas críticos.
 
-A través del diseño, implementación y validación de nuevos periféricos dentro del modelo de máquina virtual, este proyecto busca ofrecer un entorno reproducible y automatizado para la ejecución de pruebas funcionales sobre software embebido. La solución se integra, además, dentro de un flujo de integración continua, lo que permite verificar de forma automática la estabilidad de la plataforma ante cada cambio en el código.
+A través del diseño, implementación y validación de nuevos periféricos dentro del modelo de máquina virtual,
+este proyecto busca ofrecer un entorno reproducible y automatizado para la ejecución de pruebas funcionales sobre software embebido.
+La solución se integra, además, dentro de un flujo de integración continua, lo que permite verificar de forma automática la estabilidad
+de la plataforma ante cada cambio en el código.
 
 En las siguientes secciones se detallan la motivación del trabajo, los objetivos planteados y el enfoque de desarrollo adoptado para su implementación.
 
 \section{Motivación}
 
-El desarrollo de sistemas embebidos conlleva múltiples desafíos técnicos, especialmente en las etapas iniciales donde el hardware aún no está disponible o es costoso de replicar. Esta limitación impacta tanto en el entorno profesional como en el académico. La posibilidad de emular plataformas completas a nivel de sistema permite mitigar estos obstáculos, facilitando el desarrollo temprano, la depuración intensiva y la validación funcional sin requerir acceso físico al hardware.
+El desarrollo de sistemas embebidos conlleva múltiples desafíos técnicos, especialmente en las etapas iniciales donde 
+el hardware aún no está disponible o es costoso de replicar. Esta limitación impacta tanto en el entorno profesional como en el académico.
+La posibilidad de emular plataformas completas a nivel de sistema permite mitigar estos obstáculos, facilitando el desarrollo temprano,
+la depuración intensiva y la validación funcional sin requerir acceso físico al hardware \cite{zabolotny2021qemu,qemu}.
 
-En el contexto educativo, aprender sobre sistemas embebidos suele implicar el uso de placas específicas, dispositivos periféricos y entornos de programación restrictivos. Esto genera barreras de entrada importantes para estudiantes y centros con recursos limitados. En este sentido, la emulación ofrece una vía accesible para explorar arquitecturas complejas, experimentar con software de bajo nivel y adquirir experiencia práctica sin los costos ni riesgos asociados al hardware real.
+En el contexto educativo, aprender sobre sistemas embebidos suele implicar el uso de placas específicas,
+dispositivos periféricos y entornos de programación restrictivos. Esto genera barreras de entrada importantes para estudiantes 
+y centros con recursos limitados. En este sentido, la emulación ofrece una vía accesible para explorar arquitecturas complejas, 
+experimentar con software de bajo nivel y adquirir experiencia práctica sin los costos ni riesgos asociados al hardware real \cite{zabolotny2021qemu}.
 
-En el ámbito industrial, y especialmente en empresas pequeñas o con procesos informales, el testing de software embebido suele estar subestimado o directamente ausente. La necesidad de disponer de múltiples bancos de prueba físicos, junto con la dificultad para reproducir entornos consistentes, complica la implementación de flujos de validación automatizados. Esta situación lleva a una falta de control sobre la calidad del software, mayor riesgo de regresiones y una dependencia excesiva de pruebas manuales.
+En el ámbito industrial, y especialmente en empresas pequeñas o con procesos informales, el testing de software embebido
+suele estar subestimado o directamente ausente. La necesidad de disponer de múltiples bancos de prueba físicos, 
+junto con la dificultad para reproducir entornos consistentes, complica la implementación de flujos de validación automatizados. 
+Esta situación lleva a una falta de control sobre la calidad del software, mayor riesgo de regresiones y una dependencia excesiva de pruebas manuales \cite{cinque2021qemu}.
 
-El uso de plataformas de emulación como QEMU, combinadas con estrategias de integración continua y diseño cuidadoso de los tests, permite abordar estos problemas de manera eficaz. No solo se facilita el desarrollo incremental y reproducible del software embebido, sino que se sientan las bases para prácticas más profesionales y escalables en el diseño de sistemas críticos.
+El uso de plataformas de emulación como QEMU, combinadas con estrategias de integración continua y diseño cuidadoso de los tests, 
+permite abordar estos problemas de manera eficaz. No solo se facilita el desarrollo incremental y reproducible del software embebido,
+sino que se sientan las bases para prácticas más profesionales y escalables en el diseño de sistemas críticos \cite{githubactions}.
 
 
 \section{Objetivos}
 
-El presente trabajo de fin de grado tiene como objetivo general desarrollar un entorno virtualizado funcional y confiable que permita validar software embebido sin requerir hardware físico. Para ello, se extiende el emulador QEMU con una nueva máquina virtual basada en la arquitectura \texttt{NOEL-V}, de Gaisler, replicando periféricos comunes como UART, GPIO y temporizadores.
+El presente trabajo de fin de grado tiene como objetivo general desarrollar un entorno virtualizado funcional y confiable que permita validar
+software embebido sin requerir hardware físico. Para ello, se extiende el emulador QEMU con una nueva máquina virtual basada en la arquitectura 
+\texttt{NOEL-V}, de Gaisler, replicando periféricos comunes como UART, GPIO y temporizadores incluidos en la biblioteca \texttt{GRLIB}.
 
-Este entorno busca ser suficientemente flexible como para permitir la incorporación de nuevas plataformas o variantes de hardware con un esfuerzo razonable. De esta forma, cualquier desarrollador podría adaptar fácilmente el modelo virtual a una nueva placa basada en GRLIB o similar, acelerando las etapas de desarrollo y prueba.
+Este entorno busca ser suficientemente flexible como para permitir la incorporación de nuevas plataformas o variantes de hardware
+con un esfuerzo razonable. De esta forma, cualquier desarrollador podría adaptar fácilmente el modelo virtual a uno nuevo basado en GRLIB o similar,
+acelerando las etapas de desarrollo y prueba.
 
 Los objetivos específicos del proyecto son:
 
 \begin{itemize}
-    \item Analizar las características de QEMU como plataforma de emulación para sistemas embebidos, en particular para arquitecturas RISC-V.
-    \item Estudiar el entorno de ejecución de la plataforma \texttt{NOEL-V} y su integración con el ecosistema GRLIB.
-    \item Diseñar y desarrollar una máquina virtual personalizada en QEMU que represente una plataforma basada en \texttt{NOEL-V}.
-    \item Emular periféricos básicos (UART, GPIO, timer) de forma funcional, garantizando la comunicación con software real.
-    \item Diseñar y ejecutar pruebas automáticas sobre el entorno emulado, asegurando la validez del modelo virtual.
-    \item Integrar un sistema de integración continua (CI) que automatice la ejecución de los tests ante cambios en el código.
-    \item Documentar el proceso seguido para extender QEMU, facilitando su replicación o adaptación a nuevas plataformas similares.
+	\item Analizar las características de QEMU como plataforma de emulación para sistemas embebidos, en particular para arquitecturas RISC-V.
+	\item Estudiar el entorno de ejecución de la plataforma \texttt{NOEL-V} y su integración con el ecosistema GRLIB.
+	\item Diseñar y desarrollar una máquina virtual personalizada en QEMU que represente una plataforma basada en \texttt{NOEL-V}.
+	\item Emular periféricos básicos (UART, GPIO, timer) de forma funcional, garantizando la comunicación con software real.
+	\item Diseñar y ejecutar pruebas automáticas sobre el entorno emulado, asegurando la validez del modelo virtual.
+	\item Integrar un sistema de integración continua (CI) que automatice la ejecución de los tests ante cambios en el código.
+	\item Documentar el proceso seguido para extender QEMU, facilitando su replicación o adaptación a nuevas plataformas similares.
 \end{itemize}
 
-Con este enfoque, se espera contribuir a la reducción de la dependencia del hardware físico durante las etapas tempranas del desarrollo embebido, al tiempo que se habilita un marco reproducible, automatizable y de bajo costo para pruebas funcionales.
+Con este enfoque, se espera contribuir a la reducción de la dependencia del hardware físico durante las etapas tempranas del desarrollo embebido,
+al tiempo que se habilita un marco reproducible, automatizable y de bajo costo para pruebas funcionales.
 
 
 \section{Desarrollo general del sistema}
 
-Este trabajo se centró en la extensión del emulador \texttt{QEMU} para incorporar una nueva plataforma basada en la arquitectura \texttt{RISC-V}, modelando una placa virtual compatible con el ecosistema de la empresa \texttt{Gaisler}. La plataforma diseñada, denominada \texttt{noel-srg}, reproduce el comportamiento de una placa real basada en el procesador \texttt{NOEL-V} y periféricos típicos incluidos en la biblioteca \texttt{GRLIB}, ampliamente utilizada en sistemas embebidos críticos.
+Este trabajo se centró en la extensión del emulador \texttt{QEMU} \cite{qemu} para incorporar una nueva 
+plataforma basada en la arquitectura \texttt{RISC-V} \cite{waterman2011riscv}, modelando una 
+plataforma virtual compatible con el ecosistema de la empresa \texttt{Gaisler}. 
+La plataforma diseñada, denominada \texttt{noel-srg}, reproduce el comportamiento basado en el procesador 
+\texttt{NOEL-V} \cite{gaisler-noelv} y periféricos típicos incluidos en la biblioteca \texttt{GRLIB} \cite{grlib}, 
+ampliamente utilizada en sistemas embebidos críticos.
 
-Uno de los pilares fundamentales de este desarrollo es el aprovechamiento de herramientas de código abierto. La elección de \texttt{QEMU} no solo se debe a su madurez técnica y su amplio soporte de arquitecturas, sino también a su naturaleza open-source, que permite acceder, comprender y modificar el código fuente del emulador. Esta característica resulta clave tanto en contextos educativos —donde promueve la experimentación y el aprendizaje profundo— como en entornos profesionales, donde la adaptabilidad es esencial para afrontar requisitos particulares sin depender de soluciones privativas.
+Uno de los pilares fundamentales de este desarrollo es el aprovechamiento de herramientas de código abierto. 
+La elección de \texttt{QEMU} no solo se debe a su madurez técnica y su amplio soporte de arquitecturas 
+\cite{cinque2021qemu}, sino también a su naturaleza \textit{open-source}, que permite acceder, comprender y modificar 
+el código fuente del emulador. Esta característica resulta clave tanto en contextos educativos —donde promueve la 
+experimentación y el aprendizaje profundo— como en entornos profesionales, donde la adaptabilidad es esencial para 
+afrontar requisitos particulares sin depender de soluciones privativas \cite{zabolotny2021qemu}.
 
-El proceso de desarrollo se llevó a cabo respetando las convenciones del proyecto oficial de \texttt{QEMU}, manteniendo la compatibilidad con sus herramientas y estructuras internas. Se definió un modelo de máquina que describe la topología de dispositivos, la asignación de memoria y el comportamiento funcional de periféricos como la UART, el temporizador y los GPIOs. Estos componentes fueron implementados y verificados mediante binarios de prueba escritos en lenguaje C, compilados con la toolchain específica de Gaisler \texttt{riscv-gaisler-elf-gcc}.
+El proceso de desarrollo se llevó a cabo respetando las convenciones del proyecto oficial de \texttt{QEMU}, 
+manteniendo la compatibilidad con sus herramientas y estructuras internas. Se definió un modelo de máquina que describe 
+la topología de dispositivos, la asignación de memoria y el comportamiento funcional de periféricos como la UART, 
+el temporizador y los GPIOs. Estos componentes fueron implementados y verificados mediante binarios de prueba escritos 
+en lenguaje C, compilados con la toolchain específica de Gaisler \texttt{riscv-gaisler-elf-gcc}.
 
-Las pruebas iniciales se realizaron en un entorno local basado en Linux, y posteriormente se implementó un sistema de integración continua utilizando \texttt{GitHub Actions}. Este pipeline permite ejecutar de manera automática los tests funcionales cada vez que se introduce un cambio en el repositorio, asegurando la estabilidad de la plataforma virtual y fomentando un flujo de trabajo colaborativo y profesional.
+Las pruebas iniciales se realizaron en un entorno local basado en Linux, y posteriormente se implementó un sistema de 
+integración continua utilizando \texttt{GitHub Actions} \cite{githubactions}. Este \textit{pipeline} permite ejecutar 
+de manera automática los tests funcionales cada vez que se introduce un cambio en el repositorio, asegurando la estabilidad 
+de la plataforma virtual y fomentando un flujo de trabajo colaborativo y profesional.
 
-El modelo resultante fue concebido con una arquitectura modular y extensible, lo que permite su adaptación a nuevas variantes de placas o la incorporación de periféricos adicionales con relativa facilidad. Esto lo convierte en una base sólida tanto para proyectos de investigación como para iniciativas de formación en diseño de sistemas embebidos.
+El modelo resultante fue concebido con una arquitectura modular y extensible, lo que permite su adaptación a nuevas 
+variantes de plataformas o la incorporación de periféricos adicionales con relativa facilidad. Esto lo convierte en una 
+base sólida tanto para proyectos de investigación como para iniciativas de formación en diseño de sistemas embebidos.
+
 
 \subsection*{Estructura del documento}
 
 El presente trabajo se organiza en los siguientes capítulos:
 
 \begin{itemize}
-    \item \textbf{Capítulo 2 – Estudio teórico y estado del arte:} Se presentan los conceptos fundamentales sobre emulación y virtualización en sistemas embebidos. También se revisan casos reales del uso de QEMU en contextos académicos e industriales, y se analiza su relevancia en entornos RISC-V y pipelines de integración continua.
+	\item \textbf{Capítulo 2 – Estudio teórico y estado del arte:} Se presentan los conceptos fundamentales sobre emulación y virtualización 
+     en sistemas embebidos. También se revisan casos reales del uso de QEMU en contextos académicos e industriales, y se analiza su relevancia 
+     en entornos RISC-V y pipelines de integración continua.
 
-    \item \textbf{Capítulo 3 – Desarrollo de la plataforma emulada:} Se describe el proceso de implementación de una nueva máquina virtual en QEMU, basada en la arquitectura NOEL de Gaisler. Se detallan las decisiones de diseño, el soporte de periféricos y las herramientas utilizadas para extender QEMU.
+	\item \textbf{Capítulo 3 – Emulador Basado en QEMU de RISCV-NOEL:} Se describe el proceso de implementación de una nueva máquina virtual en QEMU,
+     basada en la arquitectura NOEL de Gaisler. Se detallan las decisiones de diseño, el soporte de periféricos y las herramientas utilizadas para 
+     extender QEMU.
 
-    \item \textbf{Capítulo 4 – Validación y pruebas del entorno:} Se documentan los tests funcionales desarrollados para validar la plataforma virtual (UART, GPIO, temporizador, interrupciones), junto con la automatización de pruebas mediante un entorno de integración continua basado en GitHub Actions.
+	\item \textbf{Capítulo 4 – Pruebas de validación funcional e integración continua:} Se documentan los tests funcionales desarrollados para validar
+     la plataforma virtual (UART, GPIO, temporizador, interrupciones), junto con la automatización de pruebas mediante un entorno de integración 
+     continua basado en GitHub Actions.
 
-    \item \textbf{Capítulo 5 – Conclusiones y trabajos futuros:} Se sintetizan los logros del proyecto, se reflexiona sobre los aportes obtenidos y se plantean posibles líneas de trabajo a futuro.
+	\item \textbf{Capítulo 5 – Conclusiones y líneas futuros:} Se sintetizan los logros del proyecto, se reflexiona sobre los aportes obtenidos
+     y se plantean posibles líneas de trabajo a futuro.
 \end{itemize}

@@ -25,24 +25,34 @@
 \chapter{Pruebas de validación funcional e integración continua}
 \label{cha:pruebas-validacion}
 
-
 \section{Introducción}
 \label{sec:introduccion-pruebas}
 
-En este capítulo se presentan las pruebas funcionales desarrolladas para validar el correcto funcionamiento del sistema emulado \texttt{noel-srg}. Las pruebas se enfocan en verificar el comportamiento esperado de los principales periféricos del SoC (UART, GPIO y temporizador), así como en comprobar la correcta gestión de interrupciones. Además, se describe el entorno de integración continua implementado para automatizar la ejecución de estas pruebas.
+En este capítulo se presentan las pruebas funcionales desarrolladas para validar el correcto funcionamiento del sistema emulado \texttt{noel-srg}. 
+Las pruebas se enfocan en verificar el comportamiento esperado de los principales periféricos del SoC (UART, GPIO y temporizador), 
+así como en comprobar la correcta gestión de interrupciones. Además, se describe el entorno de integración continua implementado para 
+automatizar la ejecución de estas pruebas.
 
-A través de estos escenarios de prueba, se buscó validar no solo la correcta implementación del hardware virtualizado, sino también el flujo completo de interacción entre el software embebido, los periféricos y el sistema de interrupciones. Cada prueba se diseñó con el propósito de replicar condiciones típicas de uso en aplicaciones embebidas, asegurando así la aplicabilidad del sistema en contextos reales.
+A través de estos escenarios de prueba, se buscó validar no solo la correcta implementación del hardware virtualizado, sino también el flujo 
+completo de interacción entre el software embebido, los periféricos y el sistema de interrupciones, en línea con el enfoque de validación 
+funcional que ha sido aplicado en otros proyectos basados en QEMU \cite{zabolotny2021qemu, cinque2021qemu, zabolotny2022daq, qbox2016}. 
+Cada prueba se diseñó con el propósito de replicar condiciones típicas de uso en aplicaciones embebidas, asegurando así la aplicabilidad 
+del sistema en contextos reales.
 
-Por último, se presentan los resultados obtenidos durante las distintas fases de validación, incluyendo el análisis del comportamiento observado en la consola de QEMU y el éxito o fallo de cada escenario de prueba.
+Por último, se presentan los resultados obtenidos durante las distintas fases de validación, incluyendo el análisis del comportamiento 
+observado en la consola de QEMU y el éxito o fallo de cada escenario de prueba.
 
 \section{Entornos de experimentación y ejecución}
 \label{subsec:entornos-experimentacion}
 
-El proceso de validación funcional y depuración inicial de la máquina \texttt{noel-srg} se llevó a cabo en dos entornos diferenciados: una estación de trabajo local para el desarrollo y pruebas preliminares, y un entorno automatizado basado en \emph{GitHub Actions} para la ejecución continua de los tests en cada modificación del código.
+El proceso de validación funcional y depuración inicial de la máquina \texttt{noel-srg} se llevó a cabo en dos entornos diferenciados: 
+una estación de trabajo local para el desarrollo y pruebas preliminares, y un entorno automatizado basado en \emph{GitHub Actions} para la 
+ejecución continua de los tests en cada modificación del código.
 
 \subsubsection*{Entorno local de desarrollo}
 
-La mayor parte del desarrollo y las pruebas iniciales se realizaron sobre una máquina con sistema operativo Ubuntu 22.04.5 LTS (\texttt{jammy}), ejecutando el kernel \texttt{6.8.0-60-generic}. Las características del hardware son las siguientes:
+La mayor parte del desarrollo y las pruebas iniciales se realizaron sobre una máquina con sistema operativo Ubuntu 22.04.5 LTS (\texttt{jammy}), 
+ejecutando el kernel \texttt{6.8.0-60-generic}. Las características del hardware son las siguientes:
 
 \begin{itemize}
 \item \textbf{Procesador}: 13th Gen Intel Core i5-1340P (12 núcleos físicos, 16 hilos, frecuencia máxima de 4.6 GHz).
@@ -52,29 +62,41 @@ La mayor parte del desarrollo y las pruebas iniciales se realizaron sobre una m�
 \item \textbf{Número de núcleos detectados}: 16 (\texttt{nproc}).
 \end{itemize}
 
-La compilación del firmware de prueba se realizó utilizando la herramienta \texttt{riscv-gaisler-elf-gcc}, versión \texttt{ncc-v1.0.4}, y la emulación fue llevada a cabo con QEMU \texttt{8.2.50}, versión base sobre la cual se desarrollaron y validaron las modificaciones.
+La compilación del firmware de prueba se realizó utilizando la herramienta \texttt{riscv-gaisler-elf-gcc}, versión \texttt{ncc-v1.0.4}, y la 
+emulación fue llevada a cabo con QEMU \texttt{8.2.50}, versión base sobre la cual se desarrollaron y validaron las modificaciones \cite{qemu}. 
 
-Este entorno permitió una rápida iteración durante el desarrollo inicial de la máquina virtual y sus periféricos, así como la ejecución manual de pruebas utilizando QEMU y GDB.
+Este entorno permitió una rápida iteración durante el desarrollo inicial de la máquina virtual y sus periféricos, así como la ejecución manual
+de pruebas utilizando QEMU y GDB \cite{gdb}.
 
 \subsection*{Automatización mediante Integración Continua}
 
-Tras la validación preliminar en entorno local, se configuró un pipeline de integración continua sobre \emph{GitHub Actions}, garantizando que cada nueva modificación del repositorio ejecutara automáticamente las pruebas funcionales.
+Tras la validación preliminar en entorno local, se configuró un pipeline de integración continua sobre \emph{GitHub Actions} \cite{githubactions}, 
+garantizando que cada nueva modificación del repositorio ejecutara automáticamente las pruebas funcionales.  
 
-En este entorno automatizado, se descargan e instalan las dependencias necesarias (incluyendo la toolchain NCC), se compila QEMU para \texttt{riscv32-softmmu}, y posteriormente se construyen y ejecutan los binarios de prueba (\texttt{uartTest}, \texttt{gpioTest}, \texttt{timerTest}, \texttt{uartIrqTest}), validando su salida.
+En este entorno automatizado, se descargan e instalan las dependencias necesarias (incluyendo la toolchain NCC), se compila QEMU 
+para \texttt{riscv32-softmmu}, y posteriormente se construyen y ejecutan los binarios de prueba (\texttt{uartTest}, \texttt{gpioTest}, 
+\texttt{timerTest}, \texttt{uartIrqTest}), validando su salida.  
 
-Esta automatización permite detectar de forma temprana posibles regresiones o errores introducidos por nuevas modificaciones del código, garantizando así la estabilidad funcional de la máquina \texttt{noel-srg} en todo momento.
+Este enfoque se alinea con las mejores prácticas de validación continua aplicadas en proyectos abiertos de RISC-V, 
+como los desarrollos de CHIPS Alliance y Codethink \cite{chipsalliance_caliptra_ci, codethink_riscv_kernel_ci, codethink_testing_in_box, rise_riscv_ci}.  
+
+Esta automatización permite detectar de forma temprana posibles regresiones o errores introducidos por nuevas modificaciones del código, 
+garantizando así la estabilidad funcional de la máquina \texttt{noel-srg} en todo momento.
 
 \vspace{1em}
-El empleo conjunto del entorno local y de la integración continua permitió cubrir tanto las necesidades de desarrollo iterativo como la validación sistemática en cada cambio del código fuente.
+El empleo conjunto del entorno local y de la integración continua permitió cubrir tanto las necesidades de desarrollo iterativo como la 
+validación sistemática en cada cambio del código fuente.
 
 \section{Prueba de UART: Loopback test}
 \label{subsec:uart-loopback}
 
-Una de las primeras pruebas desarrolladas para validar la funcionalidad básica del sistema fue un test sobre el periférico UART, empleando su modo \emph{loopback}. El objetivo principal de este test fue verificar que el flujo de datos desde la CPU hasta el periférico y su retorno al software funcionara correctamente, sin necesidad de hardware externo.
+Una de las primeras pruebas desarrolladas para validar la funcionalidad básica del sistema fue un test sobre el periférico 
+UART, empleando su modo \emph{loopback}. El objetivo principal de este test fue verificar que el flujo de datos desde la CPU 
+hasta el periférico y su retorno al software funcionara correctamente, sin necesidad de hardware externo.
 
 \subsection*{Objetivo de la prueba}
 
-El test buscó validar los siguientes aspectos del periférico \texttt{grlib-apbuart}:
+El test buscó validar los siguientes aspectos del periférico \texttt{grlib-apbuart} \cite{grlib, qemu_grlib_apbuart}:
 
 \begin{itemize}
     \item La capacidad de transmisión (\emph{TX}) y recepción (\emph{RX}) básica de la UART.
@@ -100,25 +122,38 @@ El binario del test, denominado \texttt{uartTest}, fue implementado en el archiv
 
 \subsection*{Acceso directo a registros}
 
-La interfaz de acceso a la UART se realizó mediante una estructura que mapea los registros del periférico a una dirección fija (\texttt{0xFC001000}), siguiendo la convención GRLIB. Esto permite realizar lecturas y escrituras de bajo nivel directamente sobre los registros del hardware virtualizado.
+La interfaz de acceso a la UART se realizó mediante una estructura que mapea los registros del periférico a una dirección fija 
+(\texttt{0xFC001000}), siguiendo la convención GRLIB \cite{grlib}. Esto permite realizar lecturas y escrituras de bajo nivel directamente 
+sobre los registros del hardware virtualizado.
 
 \subsection*{Importancia del test}
 
-Esta prueba es esencial porque permite validar el canal de comunicación serial básico del sistema emulado. La UART es una herramienta fundamental en sistemas embebidos, ya que es la vía principal de salida en entornos donde no existen interfaces gráficas. Además, al ejecutarse completamente en modo \emph{loopback}, no requiere dispositivos externos ni interacción manual, lo que permite su automatización dentro del pipeline de integración continua.
+Esta prueba es esencial porque permite validar el canal de comunicación serial básico del sistema emulado. La UART es una herramienta 
+fundamental en sistemas embebidos, ya que constituye la vía principal de salida en entornos donde no existen interfaces gráficas. 
+Además, al ejecutarse completamente en modo \emph{loopback}, no requiere dispositivos externos ni interacción manual, lo que permite su 
+automatización dentro del pipeline de integración continua.
 
 \vspace{1em}
 \subsection*{Discusión de resultados}
 
-El resultado de la prueba confirmó el correcto funcionamiento del subsistema UART en el entorno emulado. La ejecución fue consistente a través de múltiples pruebas locales y en la automatización de la integración continua, sin que se detectaran variaciones en el comportamiento o fallos intermitentes. 
+El resultado de la prueba confirmó el correcto funcionamiento del subsistema UART en el entorno emulado. La ejecución fue 
+consistente a través de múltiples pruebas locales y en la automatización de la integración continua, sin que se detectaran 
+variaciones en el comportamiento o fallos intermitentes. 
 
-Dado el carácter determinista de la prueba y la estabilidad del entorno emulado, no se consideró necesario realizar un análisis estadístico adicional. La validez de la prueba se sostiene en la reproducibilidad del resultado esperado y en la coherencia con la especificación funcional del periférico.
+Dado el carácter determinista de la prueba y la estabilidad del entorno emulado, no se consideró necesario realizar un análisis 
+estadístico adicional. La validez de la prueba se sostiene en la reproducibilidad del resultado esperado y en la coherencia con la 
+especificación funcional del periférico \cite{grlib, qemu_grlib_apbuart}.
 
-Esta prueba constituye una validación esencial del camino básico de entrada/salida serial del sistema, sobre el cual se fundamentan tanto la interacción con el usuario como el diagnóstico en etapas posteriores del desarrollo.
+Esta prueba constituye una validación esencial del camino básico de entrada/salida serial del sistema, sobre el cual se 
+fundamentan tanto la interacción con el usuario como el diagnóstico en etapas posteriores del desarrollo.
 
 \section{Prueba de GPIO: validación de lectura y escritura digital}
 \label{subsec:gpio-test}
 
-El segundo componente validado fue el periférico de propósito general GPIO (\emph{General Purpose Input/Output}). Esta prueba permite verificar el correcto direccionamiento de los registros del periférico, así como el funcionamiento básico de las operaciones de escritura, lectura y configuración de dirección.
+El segundo componente validado fue el periférico de propósito general GPIO (\emph{General Purpose Input/Output}), 
+incluido dentro de la librería GRLIB \cite{grlib}. 
+Esta prueba permite verificar el correcto direccionamiento de sus registros, así como el funcionamiento básico de las 
+operaciones de escritura, lectura y configuración de dirección en el entorno emulado provisto por QEMU \cite{qemu}.
 
 \subsection*{Objetivo de la prueba}
 
@@ -133,7 +168,8 @@ La prueba de GPIO busca confirmar los siguientes aspectos:
 
 \subsection*{Implementación del test}
 
-El binario \texttt{gpioTest} implementa una secuencia simple que configura el pin número 22 como salida, escribe un valor alto y bajo, y verifica mediante lectura si el cambio se refleja correctamente:
+El binario \texttt{gpioTest} implementa una secuencia simple que configura el pin número 22 como salida, escribe un valor alto y 
+bajo, y verifica mediante lectura si el cambio se refleja correctamente:
 
 \begin{enumerate}
     \item Configura el pin 22 (\texttt{GPIO\_PIN\_MASK}) como salida mediante \texttt{gpio\_dir\_write()}.
@@ -146,13 +182,17 @@ Se introdujo una breve función de \emph{delay} mediante bucles vacíos para per
 
 \subsection*{Acceso a los registros del GPIO}
 
-El periférico fue mapeado en la dirección base \texttt{0xFC083000}, accediendo a sus registros mediante un puntero a memoria. La interfaz fue encapsulada en un módulo (\texttt{gpio.h} y \texttt{gpio.c}), que proporciona funciones de lectura, escritura y configuración de dirección.
+El periférico fue mapeado en la dirección base \texttt{0xFC083000}, accediendo a sus registros mediante un puntero a memoria. 
+La interfaz fue encapsulada en un módulo (\texttt{gpio.h} y \texttt{gpio.c}), que proporciona funciones de lectura, escritura y 
+configuración de dirección. Este mecanismo reproduce el esquema de mapeo definido en GRLIB \cite{grlib}, 
+asegurando coherencia entre la especificación y la emulación.
 
 \subsection*{Importancia del test}
 
-La correcta operación del periférico GPIO es esencial para la emulación de interacciones básicas con hardware externo, tales como botones, switches o LEDs virtuales. Además, su prueba confirma que el mapeo de memoria y el acceso desde la CPU emulada se realizan sin errores.
-
-Al igual que el test de UART, este ejercicio puede automatizarse fácilmente en el entorno de integración continua, permitiendo detectar regresiones en el comportamiento del periférico sin intervención humana.
+La correcta operación del periférico GPIO es esencial para la emulación de interacciones básicas con hardware externo, tales como 
+botones, switches o LEDs virtuales. Además, su prueba confirma que el mapeo de memoria y el acceso desde la CPU emulada se realizan sin errores.  
+Al igual que el test de UART, este ejercicio puede automatizarse fácilmente en el entorno de integración continua, permitiendo detectar 
+regresiones en el comportamiento del periférico sin intervención humana \cite{zabolotny2022daq}.
 
 \subsection*{Resultados de la prueba}
 
@@ -162,27 +202,36 @@ La ejecución del binario \texttt{gpioTest} mostró el siguiente resultado en la
 GPIO test PASSED
 \end{verbatim}
 
-Durante el proceso de validación no se detectaron discrepancias entre los valores escritos y leídos en el periférico, confirmando el correcto funcionamiento del acceso a registros y la coherencia de la configuración de dirección.
+Durante el proceso de validación no se detectaron discrepancias entre los valores escritos y leídos en el periférico, confirmando el 
+correcto funcionamiento del acceso a registros y la coherencia de la configuración de dirección.
 
 \subsection*{Discusión de resultados}
 
-El test fue ejecutado repetidamente en entornos locales y dentro del pipeline de integración continua, mostrando un comportamiento estable y predecible. El acceso a los registros del GPIO a través de la emulación no presentó errores ni inconsistencias, lo que valida tanto la implementación del periférico en QEMU como la interacción del software embebido con el mismo.
+El test fue ejecutado repetidamente en entornos locales y dentro del pipeline de integración continua, mostrando un comportamiento 
+estable y predecible. El acceso a los registros del GPIO a través de la emulación no presentó errores ni inconsistencias, lo que valida 
+tanto la implementación del periférico en QEMU \cite{qemu} como la interacción del software embebido con el mismo.
 
-Dado que la prueba reproduce un flujo básico de lectura y escritura digital, su éxito representa una verificación fundamental del sistema de mapeo de memoria y del acceso programático a dispositivos. Esta validación es especialmente relevante para aplicaciones que requieran manipulación de hardware externo simulado, co
+Dado que la prueba reproduce un flujo básico de lectura y escritura digital, su éxito representa una verificación fundamental del 
+sistema de mapeo de memoria y del acceso programático a dispositivos. Esta validación es especialmente relevante para aplicaciones que 
+requieran manipulación de hardware externo simulado.
 
 \section{Prueba de temporizador: interrupciones periódicas}
 \label{subsec:timer-test}
 
-La última prueba funcional desarrollada para validar la máquina virtual \texttt{noel-srg} fue la prueba del temporizador (\emph{GPTIMER}). Esta prueba tuvo como propósito verificar el correcto funcionamiento del temporizador como generador de interrupciones periódicas, así como la correcta atención de dichas interrupciones por el núcleo de la CPU emulado.
+La última prueba funcional desarrollada para validar la máquina virtual \texttt{noel-srg} fue la prueba del 
+temporizador (\emph{GPTIMER}). Este periférico, definido en la librería GRLIB \cite{grlib}, se evaluó como 
+generador de interrupciones periódicas, verificando tanto la correcta emisión de dichas señales como su 
+atención por parte del núcleo de la CPU emulado en QEMU \cite{qemu}. 
 
 \subsection*{Objetivo de la prueba}
 
-Los objetivos de esta prueba fueron:
+Los objetivos principales de esta validación fueron:
 
 \begin{itemize}
     \item Configurar el temporizador para generar interrupciones periódicas.
     \item Registrar un manejador de interrupciones (\emph{IRQ handler}) que contabilice los eventos.
-    \item Validar que las interrupciones son entregadas por el GPTIMER, enrutadas a través del PLIC, y atendidas correctamente por el firmware.
+    \item Validar que las interrupciones son generadas por el GPTIMER, enrutadas a través del PLIC y 
+    atendidas correctamente por el firmware \cite{qemu_aclint_source,qemu_riscv_virt_devices}.
 \end{itemize}
 
 \subsection*{Implementación del test}
@@ -190,183 +239,168 @@ Los objetivos de esta prueba fueron:
 El binario \texttt{timerTest} implementa los siguientes pasos:
 
 \begin{enumerate}
-    \item Llama a \texttt{startup()}, que configura el entorno de interrupciones:
+    \item Invoca la rutina \texttt{startup()}, que configura el entorno de interrupciones:
     \begin{itemize}
-        \item Se inicializa el PLIC y se configura el manejador de excepciones.
-        \item Se deshabilitan y luego habilitan globalmente las interrupciones.
+        \item Inicializa el PLIC y el manejador global de excepciones.
+        \item Deshabilita y vuelve a habilitar globalmente las interrupciones.
     \end{itemize}
     
     \item Habilita la UART como salida estándar.
-    
-    \item Registra como manejador de interrupciones externas la función \texttt{gptimer\_handler()} mediante \texttt{install\_irq\_handler()}.
-    
+
+    \item Registra la función \texttt{gptimer\_handler()} como manejador de interrupciones externas mediante 
+    \texttt{install\_irq\_handler()}.
+
     \item Configura el temporizador:
     \begin{itemize}
-        \item Establece un \emph{scaler} bajo, logrando una alta frecuencia de interrupciones.
-        \item Configura un contador que provoca una interrupción tras 2 millones de ticks.
-        \item Habilita el modo de reinicio automático e interrupciones.
+        \item Establece un \emph{scaler} bajo, para lograr una alta frecuencia de interrupciones.
+        \item Define un contador que provoca una interrupción tras 2 millones de ticks.
+        \item Activa el modo de reinicio automático e interrupciones.
     \end{itemize}
-    
+
     \item Habilita las interrupciones externas mediante las instrucciones CSR correspondientes.
-    
-    \item Entra en un bucle donde espera recibir tres interrupciones, ejecutando la instrucción \texttt{wfi} (\emph{wait for interrupt}) para optimizar el consumo del CPU virtual.
-    
+
+    \item Entra en un bucle donde espera recibir tres interrupciones, ejecutando la instrucción 
+    \texttt{wfi} (\emph{wait for interrupt}) para optimizar el consumo del CPU virtual.
+
     \item Una vez recibidas las tres interrupciones, imprime un mensaje confirmando el éxito de la prueba.
 \end{enumerate}
 
-El manejador \texttt{gptimer\_handler()} incrementa una variable global cada vez que es invocado y limpia el estado de la interrupción en el temporizador mediante \texttt{timer1\_clear\_pending()}.
+El manejador \texttt{gptimer\_handler()} incrementa una variable global cada vez que es invocado y limpia el 
+estado de la interrupción en el temporizador mediante \texttt{timer1\_clear\_pending()}.
 
 \subsection*{Manejo de interrupciones}
 
-La infraestructura de interrupciones utilizada incluye:
+La infraestructura de interrupciones utilizada incluyó:
 
 \begin{itemize}
-    \item El temporizador GPTIMER genera una señal IRQ.
-    \item Esta señal es entregada al PLIC, que la enruta al hart activo.
-    \item El sistema operativo, a través del manejador \texttt{bare\_isr\_handle()} definido en el archivo \texttt{startup.c}, decodifica la fuente de la interrupción y llama a \texttt{irq\_dispatch()}.
-    \item Finalmente, \texttt{irq\_dispatch()} invoca al manejador previamente registrado (\texttt{gptimer\_handler()}).
+    \item El temporizador GPTIMER genera una señal IRQ \cite{grlib}.
+    \item Esta señal es entregada al PLIC, que la enruta al hart activo \cite{qemu_aclint_source}.
+    \item El manejador global \texttt{bare\_isr\_handle()} definido en \texttt{startup.c} decodifica la fuente 
+    de la interrupción y llama a \texttt{irq\_dispatch()}.
+    \item Finalmente, \texttt{irq\_dispatch()} invoca al manejador previamente registrado 
+    (\texttt{gptimer\_handler()}).
 \end{itemize}
 
 \subsection*{Importancia del test}
 
-La correcta generación y gestión de interrupciones periódicas es esencial para el funcionamiento de cualquier sistema operativo o aplicación embebida que requiera temporización. Validar el funcionamiento del GPTIMER demuestra que el entorno emulado puede gestionar correctamente flujos asincrónicos de eventos, simulando el comportamiento del hardware real.
+La correcta generación y gestión de interrupciones periódicas es esencial para el funcionamiento de sistemas 
+operativos o aplicaciones embebidas que requieren temporización. Validar el GPTIMER demuestra que el entorno 
+emulado en QEMU puede gestionar correctamente flujos asincrónicos de eventos, lo que reproduce fielmente el 
+comportamiento del hardware real \cite{zabolotny2022daq}. 
 
-Este tipo de pruebas son fundamentales para el desarrollo de planificadores (\emph{schedulers}), rutinas periódicas y otros subsistemas dependientes del tiempo.
+Este tipo de pruebas son fundamentales para el desarrollo de planificadores (\emph{schedulers}), rutinas periódicas 
+y subsistemas dependientes del tiempo.
 
 \subsection*{Resultados de la prueba}
 
-Durante la ejecución del binario \texttt{timerTest}, la salida por UART mostró la secuencia de mensajes \texttt{Tick!}, indicando que las interrupciones fueron generadas y atendidas correctamente. Al completarse el número esperado de eventos, el sistema imprimió:
+Durante la ejecución del binario \texttt{timerTest}, la salida por UART mostró la secuencia de mensajes \texttt{Tick!}, 
+confirmando que las interrupciones fueron generadas y atendidas correctamente. Tras cumplirse el número esperado de 
+eventos, el sistema imprimió:
 
 \begin{verbatim}
 Timer test PASSED
 \end{verbatim}
 
-Este resultado valida que el flujo completo —desde la configuración del temporizador, pasando por la generación de la interrupción, el enrutamiento a través del PLIC y la ejecución del manejador— opera correctamente en el entorno emulado.
+Este resultado valida que el flujo completo —desde la configuración del temporizador, pasando por la generación de 
+la interrupción, el enrutamiento a través del PLIC y la ejecución del manejador— opera correctamente en el entorno emulado.
 
 \subsection*{Discusión de resultados}
 
-Las pruebas confirmaron que el temporizador GPTIMER puede generar interrupciones periódicas confiables y que el firmware puede atenderlas mediante su infraestructura básica de control de interrupciones. El comportamiento observado fue coherente en ejecuciones repetidas y dentro del pipeline de integración continua, lo que confirma la estabilidad del modelo emulado.
+Las pruebas confirmaron que el GPTIMER puede generar interrupciones periódicas confiables y que el firmware puede 
+atenderlas mediante su infraestructura básica de control de interrupciones. El comportamiento observado fue 
+consistente en ejecuciones repetidas y dentro del pipeline de integración continua, confirmando la estabilidad del 
+modelo emulado. 
 
-La verificación de este flujo es crítica en arquitecturas embebidas, ya que temporizadores como el GPTIMER suelen ser utilizados para el control del tiempo, la planificación de tareas y la ejecución periódica de rutinas en tiempo real. Esta prueba proporciona una base sólida sobre la cual desarrollar funcionalidades más complejas en sistemas multitarea o con requisitos temporales estrictos.
-
-\section{Prueba de UART con interrupciones: Loopback IRQ Test}
-\label{subsec:uart-irq-test}
-
-Como extensión del test de UART básico, se implementó una prueba adicional destinada a verificar el funcionamiento del sistema de interrupciones del periférico UART. El objetivo fue confirmar que el evento de recepción de datos genera una interrupción correctamente, que esta interrupción es enrutada mediante el PLIC, y que es atendida por el núcleo RISC-V emulado.
-
-\subsection*{Objetivo de la prueba}
-
-Los aspectos validados mediante esta prueba fueron:
-
-\begin{itemize}
-    \item Habilitación y correcto disparo de la interrupción de recepción de la UART.
-    \item Configuración del controlador de interrupciones (PLIC) para aceptar la señal del periférico UART.
-    \item Registro e invocación de un manejador (\emph{IRQ handler}) asociado a la interrupción generada.
-    \item Validación del dato recibido en el contexto del handler.
-\end{itemize}
-
-\subsection*{Implementación del test}
-
-El binario \texttt{uartIrqTest} implementa la siguiente secuencia:
-
-\begin{enumerate}
-    \item Ejecuta la rutina \texttt{startup()} que configura el entorno de interrupciones.
-    \item Habilita la transmisión y recepción de la UART.
-    \item Registra la función \texttt{uart\_rx\_handler()} como manejador para la interrupción correspondiente a la UART mediante \texttt{install\_irq\_handler()}.
-    \item Habilita la interrupción de recepción en el registro de control del periférico y desmascara su correspondiente línea en el PLIC.
-    \item Activa el modo \emph{loopback}, permitiendo que los datos enviados se reintroduzcan en el canal de recepción.
-    \item Envía el carácter de prueba (\texttt{'X'}) mediante \texttt{outchar()}.
-    \item Entra en un bucle infinito donde el procesador espera eventos mediante la instrucción \texttt{wfi}.
-\end{enumerate}
-
-Cuando el carácter transmitido es recibido por el periférico (gracias al \emph{loopback}), este genera una interrupción que es procesada por el handler \texttt{uart\_rx\_handler()}. Allí se verifica el dato recibido y se imprime el mensaje \texttt{UART irq loopback test PASSED} si la verificación es correcta. Además, la interrupción es deshabilitada tras el primer evento para evitar nuevas activaciones innecesarias.
-
-\subsection*{Flujo de interrupciones}
-
-El flujo de manejo de la interrupción es el siguiente:
-
-\begin{enumerate}
-    \item El periférico UART detecta un dato recibido y genera una interrupción.
-    \item El PLIC enruta la interrupción hacia el hart 0.
-    \item El handler global (\texttt{bare\_isr\_handle()}) decodifica el tipo de evento y llama a \texttt{irq\_dispatch()}.
-    \item Finalmente, \texttt{irq\_dispatch()} invoca al handler específico de la UART, \texttt{uart\_rx\_handler()}.
-\end{enumerate}
-
-\subsection*{Importancia del test}
-
-Este test permite validar no solo la operación básica del periférico UART, sino también la capacidad del entorno emulado para gestionar eventos asíncronos mediante interrupciones. El éxito de esta prueba confirma que el flujo completo desde la generación del evento hasta su manejo por software funciona correctamente, emulando el comportamiento esperado en una plataforma real.
-
-\subsection*{Resultados obtenidos}
-
-Durante la ejecución del test, la UART generó correctamente la interrupción tras recibir el carácter enviado en modo loopback. El manejador \texttt{uart\_rx\_handler()} procesó el evento como se esperaba, imprimiendo el mensaje de validación. Al igual que en las pruebas anteriores, no se detectaron errores ni comportamientos anómalos.
-
+La verificación de este flujo es crítica en arquitecturas embebidas, ya que temporizadores como el GPTIMER suelen 
+utilizarse para el control del tiempo, la planificación de tareas y la ejecución periódica de rutinas en tiempo real. 
+Esta validación constituye una base sólida sobre la cual construir funcionalidades más complejas en sistemas 
+multitarea o con requisitos temporales estrictos.
 
 \section{Automatización del testing mediante Integración Continua}
 \label{sec:ci-testing}
 
-Con el objetivo de asegurar la calidad del código y la estabilidad de la máquina \texttt{noel-srg}, se integró un pipeline de integración continua (CI) basado en \emph{GitHub Actions}. Esta automatización permite ejecutar las pruebas funcionales descritas previamente de forma automática ante cada cambio en el repositorio, detectando fallos de manera temprana en el ciclo de desarrollo.
+Con el propósito de garantizar la calidad del código y la estabilidad de la máquina virtual \texttt{noel-srg}, se implementó un 
+pipeline de integración continua (CI) basado en \emph{GitHub Actions}~\cite{githubactions}. Este mecanismo de automatización permite 
+ejecutar las pruebas funcionales descritas en las secciones anteriores de forma sistemática ante cada modificación del repositorio, 
+facilitando la detección temprana de fallos en el ciclo de desarrollo. Estrategias similares han demostrado ser eficaces en proyectos 
+de verificación embebida y de ecosistemas RISC-V~\cite{chipsalliance_caliptra_ci, riscv_summit_veer_ci, codethink_riscv_kernel_ci}.
 
 \subsection*{Estructura del pipeline}
 
-El pipeline definido en el archivo \texttt{.github/workflows/ci.yml} se ejecuta en cada \texttt{push} y \texttt{pull request}, y sigue los siguientes pasos:
+El pipeline, definido en el archivo \texttt{.github/workflows/ci.yml}, se activa automáticamente en cada evento de 
+\texttt{push} o \texttt{pull request}, y está compuesto por las siguientes etapas:
 
 \begin{enumerate}
     \item \textbf{Preparación del entorno:}
     \begin{itemize}
         \item Descarga del repositorio.
-        \item Inicialización del submódulo \texttt{firmware-tests}, que contiene los binarios de prueba.
-        \item Instalación de dependencias necesarias: \texttt{glib}, \texttt{pixman}, compiladores y utilidades básicas.
+        \item Inicialización del submódulo \texttt{firmware-tests}, que contiene los binarios de validación.
+        \item Instalación de dependencias requeridas (\texttt{glib}, \texttt{pixman}, compiladores y utilidades de compilación).
     \end{itemize}
 
     \item \textbf{Instalación de la toolchain Gaisler NCC:}
     \begin{itemize}
-        \item Se utiliza \texttt{riscv-gaisler-elf-gcc} para compilar los binarios de prueba y \texttt{riscv-gaisler-elf-gdb} para posibles depuraciones.
-        \item La toolchain se descarga y se cachea para evitar descargas repetitivas.
+        \item Se emplea \texttt{riscv-gaisler-elf-gcc} para compilar los binarios de prueba y \texttt{riscv-gaisler-elf-gdb} para 
+        tareas de depuración.
+        \item La toolchain se descarga y almacena en caché, optimizando la ejecución del pipeline.
     \end{itemize}
 
     \item \textbf{Compilación de QEMU:}
     \begin{itemize}
-        \item Se configura QEMU para compilar exclusivamente el target \texttt{riscv32-softmmu}, habilitando el modo debug para facilitar el diagnóstico.
+        \item Se construye únicamente el target \texttt{riscv32-softmmu}, habilitando las opciones de depuración que facilitan 
+        el diagnóstico de errores.
     \end{itemize}
 
     \item \textbf{Compilación de los binarios de prueba:}
     \begin{itemize}
-        \item Se compilan los programas que ejercitan los distintos periféricos (\texttt{uartTest}, \texttt{gpioTest}, \texttt{timerTest}, \texttt{uartIrqTest}).
+        \item Se generan los programas diseñados para ejercitar los periféricos implementados 
+        (\texttt{uartTest}, \texttt{gpioTest}, \texttt{timerTest}, \texttt{uartIrqTest}).
     \end{itemize}
 
     \item \textbf{Ejecución automatizada de pruebas:}
     \begin{itemize}
-        \item Cada binario es ejecutado dentro de QEMU utilizando la máquina virtual \texttt{noel-srg}.
-        \item Se utiliza un script \texttt{runQEMU} que automatiza la ejecución de QEMU con los parámetros adecuados (\texttt{-M noel-srg}, \texttt{-nographic}, etc.).
-        \item La salida se captura en logs y se analiza mediante \texttt{grep} para detectar el mensaje de éxito.
+        \item Cada binario se ejecuta en QEMU sobre la plataforma virtual \texttt{noel-srg}.
+        \item Se utiliza el script \texttt{runQEMU}, que automatiza la invocación de QEMU con los parámetros necesarios 
+        (\texttt{-M noel-srg}, \texttt{-nographic}, entre otros).
+        \item La salida de ejecución se redirige a logs, posteriormente analizados con \texttt{grep} para verificar 
+        la aparición de los mensajes de éxito.
     \end{itemize}
 
     \item \textbf{Validación de resultados:}
     \begin{itemize}
-        \item Cada prueba busca la cadena \texttt{PASSED} en su correspondiente log. Si no se encuentra, la acción falla y detiene el pipeline.
+        \item Cada prueba busca la cadena \texttt{PASSED} en su log correspondiente. En caso de no hallarse, 
+        la acción falla y el pipeline se detiene.
     \end{itemize}
 \end{enumerate}
 
 \subsection*{Importancia de la automatización}
 
-La automatización del testing aporta numerosos beneficios al flujo de trabajo:
+La adopción de un entorno de integración continua en proyectos de emulación embebida presenta ventajas significativas: 
 
 \begin{itemize}
-    \item Permite detectar errores en etapas tempranas del desarrollo, reduciendo los costos asociados a errores tardíos.
-    \item Garantiza que los cambios futuros en el código de QEMU o en los binarios de prueba no introduzcan regresiones funcionales.
-    \item Facilita el trabajo colaborativo, dado que cada contribución es verificada automáticamente.
-    \item Mejora la trazabilidad de los fallos, al dejar un historial claro de ejecuciones exitosas y fallidas.
+    \item Permite identificar errores en fases tempranas, reduciendo el impacto de defectos en etapas avanzadas del desarrollo.
+    \item Asegura que nuevas modificaciones en QEMU o en los binarios de prueba no introduzcan regresiones funcionales.
+    \item Favorece la colaboración, al proporcionar verificación automática en cada contribución.
+    \item Mejora la trazabilidad de fallos mediante un historial claro de ejecuciones exitosas y fallidas.
 \end{itemize}
 
-\vspace{1em}
-Este entorno de integración continua constituye un paso esencial hacia prácticas de desarrollo profesionalizadas en sistemas embebidos, donde la verificación continua en entornos virtualizados permite acelerar el ciclo de desarrollo y reducir la dependencia del hardware físico.
+En línea con prácticas aplicadas en proyectos como los de CHIPS Alliance~\cite{chipsalliance_caliptra_ci, riscv_summit_veer_ci} 
+y la validación de kernels RISC-V~\cite{codethink_testing_in_box, rise_riscv_ci}, este pipeline constituye un paso clave hacia 
+procesos de desarrollo más profesionalizados en entornos embebidos. La verificación sistemática en plataformas virtuales 
+permite acelerar el ciclo iterativo de desarrollo y disminuir la dependencia de hardware físico.
 
 \section{Conclusiones del capítulo}
 
-Las pruebas realizadas permitieron validar de manera efectiva el correcto funcionamiento de la máquina virtual \texttt{noel-srg} y sus periféricos emulados en QEMU. Cada uno de los tests ejecutados cubrió aspectos clave del sistema: comunicación serie mediante UART, manipulación digital con GPIO y gestión de interrupciones periódicas a través del temporizador.
+Las pruebas desarrolladas permitieron comprobar el correcto funcionamiento de la máquina virtual \texttt{noel-srg} y de sus 
+periféricos emulados en QEMU. Cada test ejecutado validó un aspecto crítico del sistema: la comunicación serie mediante UART, 
+la manipulación digital con GPIO y la gestión de interrupciones periódicas a través del temporizador.
 
-Además, la automatización de estas pruebas mediante un pipeline de integración continua permitió establecer un flujo de verificación confiable, facilitando la detección temprana de errores y asegurando la estabilidad del desarrollo a lo largo del tiempo.
+La automatización de estas pruebas en un pipeline de integración continua aportó un marco de verificación confiable, 
+capaz de detectar errores en forma temprana y de garantizar la estabilidad del proyecto en el tiempo. 
 
-En conjunto, los resultados demuestran que la emulación lograda reproduce fielmente el comportamiento esperado por el software embebido, proporcionando un entorno de pruebas robusto y autónomo que elimina la necesidad de hardware físico durante las etapas iniciales del desarrollo y la validación.
+En conjunto, los resultados confirman que la emulación implementada reproduce de manera fiel el comportamiento esperado 
+por el software embebido, ofreciendo un entorno robusto y autónomo de validación que elimina la necesidad de hardware físico 
+en las fases iniciales de desarrollo y pruebas.
+
 
 

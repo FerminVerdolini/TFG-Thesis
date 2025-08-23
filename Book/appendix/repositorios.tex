@@ -1,0 +1,62 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Generic template for TFC/TFM/TFG/Tesis
+%
+% $Id: manual.tex,v 1.14 2016/03/31 10:44:12 macias Exp $
+%
+% By:
+%  + Javier Macías-Guarasa. 
+%    Departamento de Electrónica
+%    Universidad de Alcalá
+%  + Roberto Barra-Chicote. 
+%    Departamento de Ingeniería Electrónica
+%    Universidad Politécnica de Madrid   
+% 
+% Based on original sources by Roberto Barra, Manuel Ocaña, Jesús Nuevo,
+% Pedro Revenga, Fernando Herránz and Noelia Hernández. Thanks a lot to
+% all of them, and to the many anonymous contributors found (thanks to
+% google) that provided help in setting all this up.
+%
+% See also the additionalContributors.txt file to check the name of
+% additional contributors to this work.
+%
+% If you think you can add pieces of relevant/useful examples,
+% improvements, please contact us at (macias@depeca.uah.es)
+%
+% You can freely use this template and please contribute with
+% comments or suggestions!!!
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Repositorios del proyecto}
+\label{appendix:repos}
+
+Con el objetivo de garantizar la transparencia y la reproducibilidad de los resultados, 
+se ponen a disposición pública los repositorios que contienen el código fuente desarrollado 
+y los programas de prueba utilizados en este Trabajo de Fin de Grado.
+
+\section*{Listado de repositorios}
+
+\begin{itemize}
+    \item \textbf{Fork de QEMU con la máquina \texttt{noel-srg}:}  
+    \url{https://github.com/FerminVerdolini/TFG-QemuNoelSrg}  
+    Incluye las modificaciones realizadas al emulador QEMU para soportar la plataforma virtual \texttt{noel-srg}. 
+    Dentro de este mismo repositorio se encuentra la configuración de GitHub Actions, 
+    que permite la ejecución automática de las pruebas funcionales.
+
+    \item \textbf{Repositorio de firmware y pruebas funcionales:}  
+    \url{https://github.com/FerminVerdolini/TFG-FirmaweTests}  
+    Contiene los binarios y código fuente de las, junto con los scripts necesarios para su compilación y ejecución en el entorno emulado.
+
+\end{itemize}
+
+\vspace{1em}
+Todos los repositorios se encuentran bajo licencia libre, con el fin de favorecer la reutilización, 
+la colaboración y la extensión de este trabajo por parte de la comunidad.
+
+
+%%% Local Variables:
+%%% TeX-master: "../book"
+%%% End:
+
+

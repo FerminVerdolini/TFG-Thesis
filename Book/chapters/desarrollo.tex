@@ -29,22 +29,37 @@
 \section{Introducción}
 \label{sec:introduccion-desarrollo}
 
-Este capítulo expone de forma detallada el proceso de desarrollo llevado a cabo para lograr la emulación funcional del softcore \textit{RISC-V NOEL} en el emulador de código abierto \textit{QEMU}, incluyendo la integración de los periféricos esenciales y la implementación de un entorno de pruebas automatizadas mediante técnicas de integración continua.
+Este capítulo expone de forma detallada el proceso de desarrollo llevado a cabo para lograr la emulación funcional del softcore 
+\textit{RISC-V NOEL} en el emulador de código abierto \textit{QEMU} \cite{qemu}, incluyendo la integración de los periféricos esenciales y 
+la implementación de un entorno de pruebas automatizadas mediante técnicas de integración continua \cite{githubactions}.
 
-El propósito principal de este capítulo es documentar la creación de una nueva placa virtual incorporada al código fuente de QEMU, describiendo los componentes necesarios para su funcionamiento, así como el proceso de diseño e implementación de cada uno de ellos. Se incluye además una explicación del funcionamiento interno del emulador QEMU, con énfasis tanto en la estructura general del sistema como en la emulación de periféricos.
+El propósito principal de este capítulo es documentar la creación de una nueva plataforma virtual incorporada al código fuente de QEMU, 
+describiendo los componentes necesarios para su funcionamiento, así como el proceso de diseño e implementación de cada uno de ellos. 
+Se incluye además una explicación del funcionamiento interno del emulador QEMU \cite{qemu}, con énfasis tanto en la estructura general del 
+sistema como en la emulación de periféricos.
 
-Adicionalmente, se analiza el uso de QEMU como herramienta para la automatización de pruebas en el desarrollo de sistemas embebidos, destacando su impacto en la mejora de la calidad del software y en la reducción de los tiempos de desarrollo. Este aspecto es especialmente relevante en contextos donde el acceso al hardware físico es limitado o costoso.
-
-A lo largo del proyecto, el proceso de desarrollo adoptó un enfoque iterativo y evolutivo. Se comenzó con una implementación mínima funcional, sobre la cual se fueron incorporando progresivamente los distintos módulos y periféricos requeridos. Este método permitió una validación continua del sistema y una detección temprana de errores, lo que resultó en un diseño más robusto y flexible.
+A lo largo del proyecto, el proceso de desarrollo adoptó un enfoque iterativo y evolutivo. Se comenzó con una implementación mínima funcional,
+sobre la cual se fueron incorporando progresivamente los distintos módulos y periféricos requeridos. 
+Este método permitió una validación continua del sistema y una detección temprana de errores, lo que resultó en un diseño más robusto y flexible.
 
 Las herramientas principales empleadas en el desarrollo fueron las siguientes:
 
 \begin{itemize}
-  \item \textbf{QEMU}: Emulador de hardware de código abierto que permite ejecutar sistemas operativos y aplicaciones en diferentes arquitecturas. En este proyecto se utilizó para emular el procesador RISC-V NOEL y los periféricos asociados.
-  \item \textbf{RISCV-NOEL}: Softcore basado en la arquitectura RISC-V, desarrollado por Cobham Gaisler, orientado a sistemas embebidos y entornos críticos. Su emulación permite la validación de software sin necesidad de hardware físico.
-  \item \textbf{GDB (GNU Debugger)}: Herramienta de depuración utilizada para examinar el estado interno del sistema emulado, establecer puntos de interrupción y analizar el flujo de ejecución del código.
-  \item \textbf{Git}: Sistema de control de versiones distribuido, empleado para el seguimiento de los cambios en el código fuente durante el desarrollo del proyecto.
-  \item \textbf{GitHub Actions}: Plataforma de integración continua y entrega continua (CI/CD), utilizada para automatizar la compilación, ejecución y validación de pruebas sobre el sistema emulado.
+  \item \textbf{QEMU}: Emulador de hardware de código abierto que permite ejecutar sistemas operativos y aplicaciones en 
+  diferentes arquitecturas \cite{qemu}. En este proyecto se utilizó para emular el procesador RISC-V NOEL y los periféricos asociados.
+
+  \item \textbf{RISC-V NOEL}: Softcore basado en la arquitectura RISC-V \cite{waterman2011riscv}, desarrollado por Cobham Gaisler \cite{gaisler-noelv}, 
+  orientado a sistemas embebidos y entornos críticos. Su emulación permite la validación de software sin necesidad de hardware físico, 
+  aprovechando además la biblioteca GRLIB para periféricos comunes \cite{grlib}.
+  
+  \item \textbf{GDB (GNU Debugger)}: Herramienta de depuración utilizada para examinar el estado interno del sistema emulado, 
+  establecer puntos de interrupción y analizar el flujo de ejecución del código \cite{gdb}.
+  
+  \item \textbf{Git}: Sistema de control de versiones distribuido, empleado para el seguimiento de los cambios en el código 
+  fuente durante el desarrollo del proyecto \cite{git}.
+  
+  \item \textbf{GitHub Actions}: Plataforma de integración continua y entrega continua (CI/CD), utilizada para automatizar la compilación, 
+  ejecución y validación de pruebas sobre el sistema emulado \cite{githubactions}.
 \end{itemize}
 
 Este capítulo se encuentra estructurado de la siguiente manera:
@@ -52,7 +67,7 @@ Este capítulo se encuentra estructurado de la siguiente manera:
 \begin{itemize}
   \item \textbf{Sección 3.1} – Introducción: Contextualiza los objetivos del desarrollo.
   \item \textbf{Sección 3.2} – Funcionamiento interno de QEMU: Expone la arquitectura modular del emulador y su flujo de inicialización.
-  \item \textbf{Sección 3.3} – Adaptación del core y diseño de la placa: Detalla la implementación de la nueva máquina virtual y la integración de los periféricos.
+  \item \textbf{Sección 3.3} – Adaptación del core y diseño de la plataforma virtual: Detalla la implementación de la nueva máquina virtual y la integración de los periféricos.
   \item \textbf{Sección 3.4} – Entorno de ejecución y depuración: Describe el uso de GDB para la depuración del sistema emulado y la configuración del entorno de pruebas.
 \end{itemize}
 
@@ -60,9 +75,15 @@ Este capítulo se encuentra estructurado de la siguiente manera:
 \section{Funcionamiento interno de QEMU}
 \label{sec:funcionamiento-qemu}
 
-El emulador QEMU (\textit{Quick EMUlator}) es una plataforma de virtualización y emulación de hardware de código abierto que permite replicar el comportamiento de distintas arquitecturas de procesador, dispositivos y sistemas completos en máquinas de propósito general. Su diseño modular y extensible lo convierte en una herramienta fundamental para el desarrollo y prueba de software en entornos donde el acceso al hardware físico es limitado o costoso \cite{qemu_docs_master, redhat_qemu_internals}.
+El emulador QEMU (\textit{Quick EMUlator}) es una plataforma de virtualización y emulación de hardware de código 
+abierto que permite replicar el comportamiento de distintas arquitecturas de procesador, dispositivos y sistemas completos 
+en máquinas de propósito general \cite{qemu}. Su diseño modular y extensible, basado en un traductor dinámico eficiente, 
+lo convierte en una herramienta fundamental para el desarrollo y prueba de software en entornos donde el acceso al 
+hardware físico es limitado o costoso \cite{bellard2005qemu}.
 
-Esta sección tiene por objetivo describir en profundidad la arquitectura interna de QEMU y su funcionamiento, con énfasis en los componentes relevantes para la implementación de nuevas máquinas y periféricos, como en el caso de la emulación del softcore RISCV-NOEL.
+Esta sección tiene por objetivo describir en profundidad la arquitectura interna de QEMU y su funcionamiento,
+con énfasis en los componentes relevantes para la implementación de nuevas máquinas y periféricos, 
+como en el caso de la emulación del softcore \textit{RISCV-NOEL}.
 
 Para ello, se analizarán los siguientes aspectos:
 
@@ -77,33 +98,47 @@ Para ello, se analizarán los siguientes aspectos:
 \subsection{Estructura modular del código fuente de QEMU}
 \label{subsec:estructura-modular-qemu}
 
-QEMU se caracteriza por poseer una arquitectura modular y jerárquica que facilita la incorporación de nuevas plataformas, procesadores y periféricos. Esta modularidad se refleja en la organización de su código fuente, el cual se encuentra dividido en múltiples directorios que encapsulan funcionalidades específicas del emulador. Comprender esta estructura resulta fundamental para extender QEMU de forma correcta y coherente con sus convenciones internas.
+QEMU se caracteriza por poseer una arquitectura modular y jerárquica que facilita la incorporación de nuevas plataformas, 
+procesadores y periféricos. Esta modularidad se refleja en la organización de su código fuente, el cual se encuentra dividido 
+en múltiples directorios que encapsulan funcionalidades específicas del emulador. Comprender esta estructura resulta fundamental 
+para extender QEMU de forma correcta y coherente con sus convenciones internas \cite{qemu_devel_docs}.
 
-A continuación, se describen los directorios más relevantes para la implementación de una nueva máquina basada en una arquitectura determinada, como en el caso de \textit{RISCV-NOEL}:
+A continuación, se describen los directorios más relevantes para la implementación de una nueva máquina basada 
+en una arquitectura determinada, como en el caso de \textit{RISCV-NOEL}:
 
 \begin{itemize}
-  \item \textbf{\texttt{hw/}}: Contiene la implementación de hardware virtualizado. Este directorio se subdivide por tipo de dispositivo o arquitectura. Por ejemplo, \texttt{hw/riscv/} contiene las máquinas específicas de RISC-V, mientras que \texttt{hw/char/}, \texttt{hw/timer/}, y \texttt{hw/gpio/} incluyen las implementaciones de periféricos de carácter, temporizadores y controladores de entrada/salida, respectivamente.
+  \item \textbf{\texttt{hw/}}: Contiene la implementación de hardware virtualizado. Este directorio se subdivide por tipo de dispositivo o arquitectura.
+  Por ejemplo, \texttt{hw/riscv/} contiene las máquinas específicas de RISC-V, mientras que \texttt{hw/char/}, \texttt{hw/timer/}, y \texttt{hw/gpio/}
+  incluyen las implementaciones de periféricos de carácter, temporizadores y controladores de entrada/salida, respectivamente.
 
-  \item \textbf{\texttt{target/}}: Incluye la implementación del backend de CPU y las instrucciones específicas de cada arquitectura. Para RISC-V, se encuentra en \texttt{target/riscv/}. Aquí se define el modelo de ejecución de la CPU, su decodificación de instrucciones, registros, excepciones y el manejo de interrupciones.
+  \item \textbf{\texttt{target/}}: Incluye la implementación del backend de CPU y las instrucciones específicas de cada arquitectura. 
+  Para RISC-V, se encuentra en \texttt{target/riscv/}. Aquí se define el modelo de ejecución de la CPU, 
+  su decodificación de instrucciones, registros, excepciones y el manejo de interrupciones.
 
-  \item \textbf{\texttt{include/}}: Contiene los encabezados públicos y privados utilizados a lo largo del proyecto. Las definiciones de estructuras, macros, interfaces entre módulos y funciones compartidas están aquí. En particular, \texttt{include/hw/} contiene las declaraciones de periféricos y máquinas virtuales.
+  \item \textbf{\texttt{include/}}: Contiene los encabezados públicos y privados utilizados a lo largo del proyecto. 
+  Las definiciones de estructuras, macros, interfaces entre módulos y funciones compartidas están aquí. 
+  En particular, \texttt{include/hw/} contiene las declaraciones de periféricos y máquinas virtuales.
 
-  \item \textbf{\texttt{docs/}}: Contiene documentación técnica del proyecto, incluyendo guías para contribuir al código, estándares de codificación, y especificaciones de arquitectura para dispositivos virtuales.
+  \item \textbf{\texttt{docs/}}: Contiene documentación técnica del proyecto, incluyendo guías para contribuir al código, 
+  estándares de codificación, y especificaciones de arquitectura para dispositivos virtuales.
 
-  \item \textbf{\texttt{softmmu/}} y \textbf{\texttt{exec/}}: Encargados de la capa de ejecución, manejo de memoria virtual, traducción dinámica y control del bucle principal de emulación (\textit{main loop}).
+  \item \textbf{\texttt{softmmu/}} y \textbf{\texttt{exec/}}: Encargados de la capa de ejecución, manejo de memoria virtual, 
+  traducción dinámica y control del bucle principal de emulación (\textit{main loop}) \cite{bellard2005qemu}.
 
-  \item \textbf{\texttt{qapi/}} y \textbf{\texttt{monitor/}}: Módulos utilizados para la comunicación con el entorno externo (por ejemplo, mediante QMP - QEMU Machine Protocol), aunque no son necesarios para una emulación básica de una nueva placa, sí son relevantes para desarrollos avanzados.
+  \item \textbf{\texttt{qapi/}} y \textbf{\texttt{monitor/}}: Módulos utilizados para la comunicación con el entorno externo 
+  (por ejemplo, mediante QMP - QEMU Machine Protocol). Aunque no son necesarios para una emulación básica de una nueva plataforma, 
+  sí son relevantes para desarrollos avanzados.
 \end{itemize}
 
 La modularidad del diseño no solo organiza el código, sino que establece interfaces bien definidas entre componentes, facilitando la reutilización de dispositivos virtuales ya implementados. Por ejemplo, un controlador UART puede ser utilizado en múltiples arquitecturas con mínimas modificaciones, simplemente mediante su inclusión y configuración adecuada en el archivo de definición de la máquina virtual correspondiente.
 
-Esta estructura también permite una separación clara entre el modelo de CPU (que define cómo se ejecuta el código máquina) y el modelo de plataforma (que define cómo se conectan periféricos y memoria). Esto es esencial para el desarrollo escalable y para garantizar la consistencia del proyecto a medida que se agregan nuevas funcionalidades \cite{qemu_docs_master}.
+Esta estructura también permite una separación clara entre el modelo de CPU (que define cómo se ejecuta el código máquina) y el modelo de plataforma (que define cómo se conectan periféricos y memoria). Esto es esencial para el desarrollo escalable y para garantizar la consistencia del proyecto a medida que se agregan nuevas funcionalidades \cite{qemu_devel_docs}.
 
 %% 3.2.2
 \subsection{Proceso de inicialización y arranque de una máquina virtual}
 \label{subsec:inicio-maquina-qemu}
 
-La inicialización de una máquina virtual en QEMU sigue un flujo bien definido, en el cual se construyen e interconectan los componentes esenciales de la plataforma emulada. Este proceso es altamente configurable, lo cual permite definir plataformas virtuales personalizadas mediante código en el propio núcleo del emulador.
+La inicialización de una máquina virtual en QEMU sigue un flujo bien definido, en el cual se construyen e interconectan los componentes esenciales de la plataforma emulada. Este proceso es altamente configurable, lo cual permite definir plataformas virtuales personalizadas mediante código en el propio núcleo del emulador \cite{qemu,qemu_devel_docs}. 
 
 Cuando QEMU se ejecuta con una arquitectura y máquina específicas, como por ejemplo:
 
@@ -111,7 +146,7 @@ Cuando QEMU se ejecuta con una arquitectura y máquina específicas, como por ej
 qemu-system-riscv32 -M noel-srg -kernel test.elf
 \end{verbatim}
 
-se activa una secuencia de inicialización cuyo flujo principal se detalla a continuación:
+se activa una secuencia de inicialización cuyo flujo principal se detalla a continuación \cite{bellard2005qemu,qemu_devel_docs}:
 
 \begin{enumerate}
   \item \textbf{Selección y registro de la máquina virtual:} Al compilar QEMU, las distintas máquinas disponibles para una arquitectura se registran mediante la macro \texttt{machine\_init()}. Cada una de ellas implementa una estructura del tipo \texttt{MachineClass}, que incluye funciones de inicialización, parámetros por defecto y dispositivos asociados.
@@ -127,36 +162,41 @@ se activa una secuencia de inicialización cuyo flujo principal se detalla a con
   \item \textbf{Inicio de la emulación:} Una vez creada la máquina, instanciada la CPU, y configurada la memoria y los dispositivos, se lanza el bucle de emulación. Este ejecuta instrucciones del binario cargado, emulando el comportamiento del sistema embebido en su conjunto.
 \end{enumerate}
 
-Este diseño basado en objetos y registros dinámicos permite que nuevas máquinas sean definidas con relativa facilidad, reutilizando periféricos ya implementados y adaptando su comportamiento según las necesidades del sistema. Asimismo, cada etapa del arranque puede ser personalizada para reflejar el hardware real que se desea emular.
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figs/qemu_boot_flow.pdf}
-%   \caption{Flujo de inicialización y arranque de una máquina virtual en QEMU}
-%   \label{fig:qemu-boot-flow}
-% \end{figure}
+Este diseño basado en objetos y registros dinámicos permite que nuevas máquinas sean definidas con relativa facilidad, 
+reutilizando periféricos ya implementados y adaptando su comportamiento según las necesidades del sistema \cite{qemu_devel_docs}. Asimismo, 
+cada etapa del arranque puede ser personalizada para reflejar el hardware real que se desea emular.
 
 %% 3.2.3
 \subsection{Representación y conexión de dispositivos y periféricos}
 \label{subsec:dispositivos-qemu}
 
-QEMU utiliza un modelo de dispositivos altamente modular y orientado a objetos, diseñado para facilitar la emulación precisa de componentes hardware. Cada dispositivo (periférico) se modela como una instancia de una clase derivada de \texttt{DeviceState}, y puede conectarse a buses virtuales, recibir interrupciones y mapear regiones de memoria de forma controlada y reutilizable.
+QEMU utiliza un modelo de dispositivos altamente modular y orientado a objetos, diseñado para facilitar la emulación 
+precisa de componentes hardware. Cada dispositivo (periférico) se modela como una instancia de una clase derivada de 
+\texttt{DeviceState}, y puede conectarse a buses virtuales, recibir interrupciones y mapear regiones de memoria de forma controlada y reutilizable \cite{qemu_devel_docs,qom2012}.
 
 \subsubsection*{Modelo de dispositivo}
 
-La base de todo periférico en QEMU es la estructura \texttt{DeviceState}, definida en \texttt{hw/qdev-core.h}. Esta representa la instancia de un dispositivo particular, incluyendo punteros a sus regiones de memoria, funciones de inicialización y conexiones a buses. Los periféricos se definen mediante macros como \texttt{DEFINE\_TYPE\_INFO}, que permiten registrar el tipo y vincular funciones específicas de inicialización y reseteo.
+La base de todo periférico en QEMU es la estructura \texttt{DeviceState}, definida en \texttt{hw/qdev-core.h}.
+Esta representa la instancia de un dispositivo particular, incluyendo punteros a sus regiones de memoria, funciones de inicialización 
+y conexiones a buses. Los periféricos se definen mediante macros como \texttt{DEFINE\_TYPE\_INFO}, que permiten registrar el tipo
+y vincular funciones específicas de inicialización y reseteo.
 
-Para los dispositivos que se conectan a un bus de sistema (como la mayoría de los periféricos en una SoC embebida), se utiliza la clase \texttt{SysBusDevice}, que extiende \texttt{DeviceState} y facilita la asignación de direcciones de memoria y líneas de interrupción.
+Para los dispositivos que se conectan a un bus de sistema (como la mayoría de los periféricos en una SoC embebida), 
+se utiliza la clase \texttt{SysBusDevice}, que extiende \texttt{DeviceState} y facilita la asignación de direcciones
+de memoria y líneas de interrupción \cite{qemu,qemu_devel_docs}.
 
 \subsubsection*{Inicialización y mapeo de memoria}
 
-Durante la inicialización de la máquina (función \texttt{machine\_init()}), los periféricos se instancian con \texttt{qdev\_new()} o su equivalente moderno \texttt{object\_new()}. Luego, se conectan al bus del sistema con \texttt{sysbus\_realize()} y se les asigna una dirección en el espacio de direcciones mediante:
+Durante la inicialización de la máquina (función \texttt{machine\_init()}), los periféricos se instancian con \texttt{qdev\_new()} 
+o su equivalente moderno \texttt{object\_new()}. Luego, se conectan al bus del sistema con \texttt{sysbus\_realize()} y se les asigna
+una dirección en el espacio de direcciones mediante:
 
 \begin{verbatim}
 sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, direccion_base);
 \end{verbatim}
 
-También se pueden declarar múltiples regiones de memoria utilizando \texttt{memory\_region\_init\_io()} o \texttt{memory\_region\_init\_ram()}, y luego añadirlas como subregiones:
+También se pueden declarar múltiples regiones de memoria utilizando \texttt{memory\_region\_init\_io()} o 
+\texttt{memory\_region\_init\_ram()}, y luego añadirlas como subregiones \cite{qemu_devel_docs}:
 
 \begin{verbatim}
 memory_region_add_subregion(&address_space, base_addr, &region);
@@ -172,26 +212,41 @@ Los dispositivos pueden generar interrupciones al procesador a través de línea
 sysbus_connect_irq(SYS_BUS_DEVICE(dev), 0, cpu_irq_line);
 \end{verbatim}
 
-Donde \texttt{cpu\_irq\_line} es una línea de interrupción expuesta por el modelo de CPU. La relación entre IRQs, controladores de interrupciones (como CLINT o PLIC en RISC-V) y dispositivos se configura explícitamente en el código de la máquina.
+Donde \texttt{cpu\_irq\_line} es una línea de interrupción expuesta por el modelo de CPU. 
+La relación entre IRQs, controladores de interrupciones (como CLINT o PLIC en RISC-V) y dispositivos se configura 
+explícitamente en el código de la máquina \cite{qemu_devel_docs}.
 
 \subsubsection*{Reutilización y extensión}
 
-Una de las fortalezas del diseño de QEMU es que los periféricos pueden reutilizarse entre múltiples arquitecturas. Por ejemplo, el controlador UART \texttt{ns16550} se utiliza tanto en x86 como en RISC-V. Para ello, basta con instanciar el dispositivo y mapearlo correctamente en la nueva plataforma, sin modificar su implementación interna.
+Una de las fortalezas del diseño de QEMU es que los periféricos pueden reutilizarse entre múltiples arquitecturas. 
+Por ejemplo, el controlador UART \texttt{ns16550} se utiliza tanto en x86 como en RISC-V. Para ello, basta con instanciar el dispositivo 
+y mapearlo correctamente en la nueva plataforma, sin modificar su implementación interna.
 
-Esta reutilización es clave para acelerar el desarrollo de nuevas plataformas virtuales y reducir errores. Además, si se requiere un nuevo periférico, este puede implementarse como una nueva clase derivada de \texttt{SysBusDevice}, con sus propias funciones de \texttt{read/write/reset} y comportamiento específico.
+Esta reutilización es clave para acelerar el desarrollo de nuevas plataformas virtuales y reducir errores. 
+Además, si se requiere un nuevo periférico, este puede implementarse como una nueva clase derivada de \texttt{SysBusDevice}, 
+con sus propias funciones de \texttt{read/write/reset} y comportamiento específico \cite{qemu,qom2012}.
 
 \vspace{1em}
-En resumen, la conexión de dispositivos en QEMU se basa en el principio de encapsulación modular, donde cada componente puede integrarse mediante interfaces estandarizadas. Esto permite simular con precisión sistemas completos y facilita tanto el desarrollo como la validación de software embebido sobre plataformas virtuales.
+En resumen, la conexión de dispositivos en QEMU se basa en el principio de encapsulación modular, donde cada componente puede integrarse
+mediante interfaces estandarizadas. Esto permite simular con precisión sistemas completos y facilita tanto el desarrollo como la 
+validación de software embebido sobre plataformas virtuales \cite{qemu,qemu_devel_docs}.
 
 %% 3.2.4
 \subsection{Estilo de codificación y convenciones internas de QEMU}
 \label{subsec:convenciones-qemu}
 
-El proyecto QEMU sigue un conjunto de convenciones estrictas en cuanto al estilo de codificación, estructura de archivos, nomenclatura y organización del código. Estas reglas no sólo facilitan la lectura y el mantenimiento del código fuente, sino que también permiten la colaboración entre cientos de desarrolladores alrededor del mundo. En este apartado se describen las principales directrices que deben seguirse al desarrollar nuevos módulos o modificar componentes existentes en QEMU.
+El proyecto QEMU sigue un conjunto de convenciones estrictas en cuanto al estilo de codificación, estructura de archivos, 
+nomenclatura y organización del código. Estas reglas no sólo facilitan la lectura y el mantenimiento del código fuente, 
+sino que también permiten la colaboración entre cientos de desarrolladores alrededor del mundo. 
+Las directrices se encuentran documentadas en la guía oficial de estilo del proyecto \cite{qemu_coding_style}, 
+la cual se inspira en gran medida en las reglas del kernel de Linux \cite{linux_coding_style}. 
+En este apartado se describen las principales normas que deben seguirse al desarrollar nuevos módulos 
+o modificar componentes existentes en QEMU.
 
 \subsubsection*{Formato del código}
 
-El código de QEMU está mayoritariamente escrito en lenguaje C, y sigue un estilo basado en la guía de codificación del kernel de Linux. Entre las reglas más importantes se encuentran:
+El código de QEMU está mayoritariamente escrito en lenguaje C, y sigue un estilo basado en la guía de codificación del kernel de Linux \cite{linux_coding_style}. 
+Entre las reglas más importantes se encuentran:
 
 \begin{itemize}
   \item Identación de 4 espacios (no se utilizan tabulaciones).
@@ -201,13 +256,13 @@ El código de QEMU está mayoritariamente escrito en lenguaje C, y sigue un esti
   \item Comentarios en estilo C (\texttt{/* ... */}) preferentemente sobre el bloque que describen.
 \end{itemize}
 
-Para verificar que el código cumple con las reglas de estilo, QEMU proporciona un script llamado \texttt{scripts/checkpatch.pl}, adaptado del kernel de Linux. También puede utilizarse \texttt{clang-format} con una configuración específica para automatizar el formato del código.
+Para verificar que el código cumple con las reglas de estilo, QEMU proporciona un script llamado \texttt{scripts/checkpatch.pl}, 
+adaptado del kernel de Linux, además de la posibilidad de utilizar herramientas como \texttt{clang-format} con configuraciones específicas. 
+El uso de estas herramientas es obligatorio para los parches propuestos al repositorio oficial \cite{qemu_coding_style}.
 
 \begin{verbatim}
 ./scripts/checkpatch.pl --no-tree --strict archivo.c
 \end{verbatim}
-
-Este tipo de herramientas es obligatorio en los parches que se proponen al repositorio oficial mediante la lista de correo del proyecto.
 
 \subsubsection*{Estructura y modularidad}
 
@@ -219,7 +274,8 @@ Cada nuevo periférico, máquina o componente debe residir en un archivo dedicad
   \item \texttt{configs/devices/\emph{arch}/}: Activación de dispositivos por arquitectura.
 \end{itemize}
 
-Esta modularidad permite mantener la separación entre arquitectura, periféricos, CPU y lógica general del sistema, lo cual resulta fundamental en una base de código de gran tamaño.
+Esta modularidad asegura la separación entre arquitectura, periféricos, CPU y lógica general del sistema, 
+lo cual es fundamental en una base de código de gran tamaño \cite{qemu_coding_style}.
 
 \subsubsection*{Convenciones de nomenclatura}
 
@@ -231,41 +287,46 @@ Los nombres de funciones y estructuras siguen una jerarquía lógica basada en s
   \item \texttt{NOEL\_STATE}, \texttt{NOEL\_UART\_STATE}: Estructuras de estado de cada componente.
 \end{itemize}
 
-Las macros y constantes suelen escribirse en mayúsculas con guiones bajos, y las funciones públicas deben ser prefijadas con el nombre del componente para evitar colisiones.
+Las macros y constantes suelen escribirse en mayúsculas con guiones bajos, y las funciones públicas deben ser prefijadas 
+con el nombre del componente para evitar colisiones \cite{qemu_coding_style}.
 
 \subsubsection*{Buenas prácticas para contribuir}
 
-El equipo de QEMU mantiene una lista de correo (\texttt{qemu-devel@nongnu.org}) como canal principal de colaboración. Todo parche debe ser enviado en formato \texttt{git send-email}, acompañado de:
+El equipo de QEMU mantiene una lista de correo (\texttt{qemu-devel@nongnu.org}) como canal principal de colaboración. 
+Todo parche debe ser enviado en formato \texttt{git send-email}, acompañado de una descripción detallada del cambio, 
+cumplimiento del formato de código, licencia explícita (\texttt{Signed-off-by:}) y comentarios adecuados en el código. 
+Estas prácticas se documentan en la guía oficial de envío de parches \cite{qemu_submitting_patches}.
 
-\begin{itemize}
-  \item Una descripción detallada del cambio (\texttt{commit message}).
-  \item Cumplimiento del formato de código.
-  \item Licencia explícita (\texttt{Signed-off-by:}).
-  \item Comentarios y documentación en el código.
-\end{itemize}
-
-Antes de enviar código, se recomienda ejecutar la batería completa de pruebas con \texttt{make check} y pruebas funcionales específicas para la arquitectura modificada.
+Antes de enviar contribuciones, se recomienda ejecutar la batería completa de pruebas con \texttt{make check} y 
+validaciones específicas para la arquitectura modificada \cite{qemu_submitting_patches}.
 
 \vspace{1em}
-Adherirse a estas convenciones no solo facilita la revisión del código por parte de la comunidad, sino que también incrementa la posibilidad de que las contribuciones sean aceptadas en el repositorio principal. En este proyecto se siguieron dichas pautas para garantizar la compatibilidad con futuras versiones de QEMU y permitir la reutilización del trabajo desarrollado.\cite{qemu_coding_style}
+Adherirse a estas convenciones no solo facilita la revisión del código por parte de la comunidad, 
+sino que también incrementa la probabilidad de aceptación en el repositorio principal. 
+En este proyecto se siguieron dichas pautas para garantizar la compatibilidad con futuras versiones de QEMU 
+y permitir la reutilización del trabajo desarrollado.
 
 %3.3
-\section{Adaptación del core y diseño de la placa RISCV-NOEL}
+\section{Adaptación del core y diseño de la plataforma virtual RISCV-NOEL}
 \label{sec:adaptacion-noel}
 
-En este apartado se detalla el proceso de adaptación de una máquina base del emulador QEMU para modelar una placa compatible con el softcore RISCV-NOEL. Esta implementación se basa en la reutilización y modificación de la arquitectura RISC-V ya soportada en QEMU, integrando periféricos compatibles con la biblioteca GRLIB.
+En este apartado se detalla el proceso de adaptación de una máquina base del emulador QEMU para modelar una máquina virtual
+compatible con el softcore RISCV-NOEL. Esta implementación se basa en la reutilización y modificación de la arquitectura 
+RISC-V ya soportada en QEMU \cite{qemu,qemu_system_emulation}, integrando periféricos compatibles con la biblioteca GRLIB \cite{grlib}.
 
-La placa virtual resultante, denominada \texttt{noel-srg}, fue desarrollada a partir del diseño de referencia \texttt{virt} de QEMU y extendida mediante periféricos derivados de la infraestructura GRLIB (Gaisler Research Library), ampliamente utilizada en entornos espaciales y sistemas embebidos críticos.
+La máquina virtual resultante, denominada \texttt{noel-srg}, fue desarrollada a partir del diseño de referencia 
+\texttt{virt} de QEMU \cite{qemu_virt_riscv}, extendida mediante periféricos derivados de la infraestructura GRLIB 
+(Gaisler Research Library), ampliamente utilizada en entornos espaciales y sistemas embebidos críticos \cite{gaisler-noelv}.
 
 La implementación considera aspectos clave como:
 \begin{itemize}
     \item La definición del sistema en chip (SoC) y su instancia en la máquina virtual.
     \item El mapeo de memoria correspondiente a cada dispositivo.
-    \item La integración de periféricos esenciales: UART, GPIO, y temporizadores.
+    \item La integración de periféricos esenciales: UART, GPIO y temporizadores.
     \item El manejo de interrupciones a través del PLIC y el controlador ACLINT.
 \end{itemize}
 
-El código fuente de esta máquina está estructurado en los archivos \texttt{noel\_srg.c} y \texttt{noel\_srg.h}
+El código fuente de esta máquina está estructurado en los archivos \texttt{noel\_srg.c} y \texttt{noel\_srg.h}.
 
 %3.3.1
 \subsection{Estructura general del SoC y la máquina \texttt{noel-srg}}
@@ -278,7 +339,7 @@ La arquitectura de la máquina virtual \texttt{noel-srg} se basa en dos estructu
     \item \texttt{NOELSRGState}: Representa el estado completo de la máquina virtual, encapsulando el SoC y parámetros adicionales.
 \end{itemize}
 
-Estas estructuras son instanciadas y registradas en QEMU como tipos personalizados mediante macros como \texttt{OBJECT\_CHECK} y \texttt{type\_init()}.
+Estas estructuras son instanciadas y registradas en QEMU como tipos personalizados mediante macros como \texttt{OBJECT\_CHECK} y \texttt{type\_init()} \cite{qemu_devel_docs}.
 
 La función principal de inicialización del sistema es \texttt{noel\_srg\_machine\_init()}, que se encarga de:
 
@@ -289,25 +350,69 @@ La función principal de inicialización del sistema es \texttt{noel\_srg\_machi
     \item Cargar el binario ejecutable si se ha proporcionado vía parámetro \texttt{-kernel}.
 \end{enumerate}
 
+\begin{codefloat}
+\begin{lstlisting}[style=CppExample]
+    
+static void noel_srg_machine_init(MachineState *machine)
+{
+    MachineClass *mc = MACHINE_GET_CLASS(machine);
+    const MemMapEntry *memmap = noel_srg_memmap;
+        
+    NOELSRGState *s = RISCV_NOEL_SRG_MACHINE(machine);
+    MemoryRegion *sys_mem = get_system_memory();
+
+    if (machine->ram_size != mc->default_ram_size) {
+        char *sz = size_to_str(mc->default_ram_size);
+        error_report("Invalid RAM size, should be %s", sz);
+        g_free(sz);
+        exit(EXIT_FAILURE);
+    }
+        
+    /* Initialize SoC */
+    object_initialize_child(OBJECT(machine), "soc", &s->soc, TYPE_RISCV_NOEL_SRG_SOC);
+    qdev_realize(DEVICE(&s->soc), NULL, &error_fatal);
+        
+    /* Data Tightly Integrated Memory */
+    memory_region_add_subregion(sys_mem,
+    memmap[NOEL_SRG_DEV_DTIM].base, machine->ram);
+        
+    if (machine->kernel_filename)
+    {
+        riscv_load_kernel(machine, &s->soc.cpus,
+        memmap[NOEL_SRG_DEV_DTIM].base,
+        false, NULL);
+    }
+}
+\end{lstlisting}
+\caption{Función de inicializacion del sistema noel\_srg\_machine\_init()}
+\end{codefloat}
+            
+
 Por su parte, el método \texttt{noel\_srg\_soc\_realize()} realiza la creación concreta de los dispositivos internos del SoC. En esta función se inicializan:
 
 \begin{itemize}
-    \item \textbf{CPU}: Mediante un array de hilos RISC-V con propiedades configurables.
-    \item \textbf{PLIC}: Controlador de interrupciones compatible con SiFive.
+    \item \textbf{CPU}: Mediante un array de hilos RISC-V con propiedades configurables \cite{waterman2011riscv}.
+    \item \textbf{PLIC}: Controlador de interrupciones compatible con SiFive \cite{qemu_virt_riscv}.
     \item \textbf{ACLINT}: Controlador de interrupciones a nivel de núcleo (CLINT + MTIMER).
-    \item \textbf{GRLIB GPIO}: Un controlador GPIO compatible con GRLIB, conectado dinámicamente a IRQs.
+    \item \textbf{GRLIB GPIO}: Un controlador GPIO compatible con GRLIB, conectado dinámicamente a IRQs \cite{grlib}.
     \item \textbf{GRLIB UART}: Dispositivo \texttt{grlib-apbuart} mapeado a \texttt{0xFC001000}.
     \item \textbf{GRLIB GPTIMER}: Temporizador con dos canales, frecuencia definida por \texttt{CPU\_CLK}.
 \end{itemize}
 
-El diseño sigue una arquitectura jerárquica donde la máquina \texttt{noel-srg} instancia un SoC (\texttt{riscv.noel.srg.soc}), que a su vez encapsula y realiza todos los dispositivos internos conectados por bus. Esta separación mejora la mantenibilidad del código y permite extender el sistema fácilmente con nuevos periféricos compatibles con la infraestructura GRLIB.
+El diseño sigue una arquitectura jerárquica donde la máquina \texttt{noel-srg} instancia un SoC (\texttt{riscv.noel.srg.soc}), 
+que a su vez encapsula y realiza todos los dispositivos internos conectados por bus. Esta separación mejora la mantenibilidad 
+del código y permite extender el sistema fácilmente con nuevos periféricos compatibles con la infraestructura GRLIB \cite{gaisler-noelv}.
 
 \subsection{Mapeo de memoria del sistema}
 \label{subsec:mapeo-memoria-noel}
 
-El mapa de memoria representa la distribución de las direcciones físicas asignadas a los distintos componentes del sistema, incluyendo memoria principal, dispositivos periféricos y regiones reservadas. Esta asignación debe ser coherente con la arquitectura esperada por el software que se ejecutará en el sistema emulado, ya que determina cómo accede el procesador a los periféricos.
+El mapa de memoria representa la distribución de las direcciones físicas asignadas a los distintos componentes del sistema, 
+incluyendo memoria principal, dispositivos periféricos y regiones reservadas. Esta asignación debe ser coherente con la arquitectura 
+esperada por el software que se ejecutará en el sistema emulado, ya que determina cómo accede el procesador a los periféricos \cite{qemu_system_emulation}.
 
-En la implementación de la máquina \texttt{noel-srg}, el mapa de memoria se define en el arreglo \texttt{noel\_srg\_memmap[]} dentro del archivo \texttt{noel\_srg.c}. Este define las direcciones base asociadas a cada componente del sistema. A continuación se resume la asignación utilizada:
+En la implementación de la máquina \texttt{noel-srg}, el mapa de memoria se define en el arreglo \texttt{noel\_srg\_memmap[]} 
+dentro del archivo \texttt{noel\_srg.c}. Este define las direcciones base asociadas a cada componente del sistema. A continuación 
+se resume la asignación utilizada:
 
 \begin{table}[H]
 \centering
@@ -327,7 +432,8 @@ GPTIMER & 0x80000300 & Temporizador compatible GRLIB \\
 \label{tab:noel-memmap}
 \end{table}
 
-Cada uno de estos dispositivos se instancia dinámicamente durante la función de inicialización del SoC (\texttt{noel\_srg\_soc\_realize()}) y se mapea en el espacio de direcciones del bus principal del sistema utilizando las funciones de QEMU:
+Cada uno de estos dispositivos se instancia dinámicamente durante la función de inicialización del SoC (\texttt{noel\_srg\_soc\_realize()}) y 
+se mapea en el espacio de direcciones del bus principal del sistema utilizando las funciones de QEMU:
 
 \begin{verbatim}
 sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, noel_srg_memmap[NOEL_SRG_DEV_XXX]);
@@ -335,21 +441,32 @@ sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, noel_srg_memmap[NOEL_SRG_DEV_XXX]);
 
 donde \texttt{NOEL\_SRG\_DEV\_XXX} es un identificador simbólico del componente (e.g., \texttt{NOEL\_SRG\_DEV\_UART}).
 
-Además del mapeo de direcciones, cada periférico se registra con el sistema de dispositivos de QEMU para que sus funciones de \texttt{read()} y \texttt{write()} sean invocadas automáticamente ante accesos del software emulado. Esta asociación es crítica para garantizar que el comportamiento del sistema refleje el hardware real esperado por los binarios RISC-V generados, por ejemplo, mediante compiladores como \texttt{ncc gaisler}.
+Además del mapeo de direcciones, cada periférico se registra con el sistema de dispositivos de QEMU para que sus 
+funciones de \texttt{read()} y \texttt{write()} sean invocadas automáticamente ante accesos del software emulado. 
+Esta asociación es crítica para garantizar que el comportamiento del sistema refleje el hardware real esperado por los 
+binarios RISC-V generados, por ejemplo, mediante compiladores como \texttt{ncc gaisler} \cite{gaisler-noelv}.
 
-El cumplimiento de este mapa de memoria garantiza la compatibilidad del sistema emulado con el software de prueba, incluyendo drivers y controladores diseñados para el entorno NOEL-V y GRLIB, y permite replicar con precisión el entorno de ejecución típico de estos sistemas embebidos.
+El cumplimiento de este mapa de memoria garantiza la compatibilidad del sistema emulado con el software de prueba, 
+incluyendo drivers y controladores diseñados para el entorno NOEL-V y GRLIB, y permite replicar con precisión el entorno de 
+ejecución típico de estos sistemas embebidos.
 
 \subsection{Integración de periféricos GRLIB (UART, GPIO, Timer)}
 \label{subsec:grlib-perifericos}
 
-La infraestructura GRLIB (Gaisler Research Library) proporciona una colección de periféricos ampliamente utilizados en sistemas embebidos críticos, especialmente en aplicaciones aeroespaciales. En el contexto de este proyecto, se integraron en la máquina virtual \texttt{noel-srg} los siguientes módulos GRLIB: \texttt{apbuart} (UART), \texttt{gptimer} (temporizador) y \texttt{gpio} (entrada/salida digital), emulados como dispositivos QEMU compatibles.
+La infraestructura GRLIB (Gaisler Research Library) proporciona una colección de periféricos ampliamente utilizados en 
+sistemas embebidos críticos, especialmente en aplicaciones aeroespaciales \cite{grlib}. 
+En el contexto de este proyecto, se integraron en la máquina virtual \texttt{noel-srg} los siguientes módulos GRLIB: 
+\texttt{apbuart} (UART), \texttt{gptimer} (temporizador) y 
+\texttt{gpio} (entrada/salida digital), emulados como dispositivos QEMU compatibles \cite{qemu_grlib_apbuart}.  
 
-Estos periféricos fueron instanciados durante la función \texttt{noel\_srg\_soc\_realize()} mediante el uso del sistema de dispositivos de QEMU basado en \texttt{SysBusDevice} y su sistema de objetos (\texttt{QOM}).
+Estos periféricos fueron instanciados durante la función \texttt{noel\_srg\_soc\_realize()} mediante el uso del sistema de dispositivos 
+de QEMU basado en \texttt{SysBusDevice} y su sistema de objetos (\texttt{QOM}) \cite{qemu_devel_docs, qom2012}.
 
 \subsubsection*{UART (GRLIB APBUART)}
 
-El periférico UART se modeló utilizando el dispositivo \texttt{grlib-apbuart}, ya presente en QEMU bajo \texttt{hw/char/grlib\_apbuart.c}. Este dispositivo se conecta al bus del sistema mediante:
-
+El periférico UART se modeló utilizando el dispositivo \texttt{grlib-apbuart}, ya presente en QEMU bajo 
+\texttt{hw/char/grlib\_apbuart.c} \cite{qemu_grlib_apbuart}. 
+Este dispositivo se conecta al bus del sistema mediante:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -360,14 +477,23 @@ El periférico UART se modeló utilizando el dispositivo \texttt{grlib-apbuart},
 \caption{Instanciación del periférico UART GRLIB en QEMU}
 \end{codefloat}
 
+Como extensión a la funcionalidad original del \texttt{grlib-apbuart}, se implementó un \emph{modo loopback}, 
+destinado a facilitar la validación funcional sin necesidad de dispositivos externos. En este modo, cada byte 
+escrito en el registro de datos es automáticamente reenviado al buffer de recepción como si hubiese sido recibido desde una fuente externa. 
+La implementación de esta funcionalidad se realizó en la función \texttt{grlib\_apbuart\_write()}, donde al detectar que el modo loopback está 
+habilitado mediante el registro de control, se inserta el dato escrito en la FIFO interna.  
 
-Como extensión a la funcionalidad original del \texttt{grlib-apbuart}, se implementó un \emph{modo loopback}, destinado a facilitar la validación funcional sin necesidad de dispositivos externos. En este modo, cada byte escrito en el registro de datos es automáticamente reenviado al buffer de recepción como si hubiese sido recibido desde una fuente externa. La implementación de esta funcionalidad se realizó en la función \texttt{grlib\_apbuart\_write()}, donde al detectar que el modo loopback está habilitado mediante el registro de control, se inserta el dato escrito en la FIFO interna .
-
-La integración del modo loopback en el periférico UART es esencial para validar su funcionamiento en entornos de prueba automatizados, ya que permite verificar tanto la transmisión como la recepción de datos sin depender de hardware físico. Además, este dispositivo posibilita la salida estándar (\texttt{stdout}) desde el sistema emulado, facilitando la comunicación básica del software de prueba mediante impresión de mensajes, validación de tests y control del flujo de ejecución, ya sea a través de la consola de QEMU o mediante archivos externos.
+La integración del modo loopback en el periférico UART es esencial para validar su funcionamiento en entornos de prueba automatizados, 
+ya que permite verificar tanto la transmisión como la recepción de datos sin depender de hardware físico \cite{grlib}. 
+Además, este dispositivo posibilita la salida estándar (\texttt{stdout}) desde el sistema emulado, facilitando la comunicación básica del software 
+de prueba mediante impresión de mensajes y validación de tests.
 
 \subsubsection*{GPIO}
 
-El periférico GPIO se instanció mediante el tipo \texttt{grlib-gpio}, definido en el archivo \texttt{hw/gpio/grlib\_gpio.c}. Este dispositivo proporciona registros de entrada, salida y dirección, lo que permite simular líneas digitales básicas. La configuración se realizó de la siguiente forma:
+El periférico GPIO se instanció mediante el tipo \texttt{grlib-gpio}, definido en el archivo \texttt{hw/gpio/grlib\_gpio.c} \cite{qemu_devel_docs}. 
+Este dispositivo proporciona registros de entrada, salida y dirección, lo que permite simular líneas digitales básicas 
+de acuerdo con la especificación de GRLIB \cite{grlib}. 
+La configuración se realizó de la siguiente forma:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -379,12 +505,14 @@ El periférico GPIO se instanció mediante el tipo \texttt{grlib-gpio}, definido
 \caption{Instanciación del periférico GPIO GRLIB en QEMU}
 \end{codefloat}
 
-
-Este periférico puede utilizarse para emular interrupciones externas generadas por cambios en las entradas, lo que resulta útil para probar controladores de interrupciones y rutinas de servicio en software embebido.
+Este periférico puede utilizarse para emular interrupciones externas generadas por cambios en las entradas, 
+lo que resulta útil para probar controladores de interrupciones y rutinas de servicio en software embebido \cite{grlib}.
 
 \subsubsection*{GPTIMER}
 
-El temporizador se modeló utilizando el módulo \texttt{grlib-gptimer}, ubicado en \texttt{hw/timer/grlib\_gptimer.c}. Este dispositivo emula un temporizador de propósito general con múltiples canales, configurables en frecuencia y modo de operación. En el caso del sistema \texttt{noel-srg}, se inicializó con una frecuencia basada en la constante \texttt{CPU\_CLK} y con dos canales habilitados:
+El temporizador se modeló utilizando el módulo \texttt{grlib-gptimer}, ubicado en \texttt{hw/timer/grlib\_gptimer.c} \cite{qemu_devel_docs}. 
+Este dispositivo emula un temporizador de propósito general con múltiples canales, configurables en frecuencia y modo de operación.  
+En el caso del sistema \texttt{noel-srg}, se inicializó con una frecuencia basada en la constante \texttt{CPU\_CLK} y con dos canales habilitados:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -397,35 +525,45 @@ sysbus_mmio_map(SYS_BUS_DEVICE(dev), 0, noel_srg_memmap[NOEL_SRG_DEV_GPTIMER]);
 \caption{Instanciación del periférico GPTIMER GRLIB en QEMU}
 \end{codefloat}
 
-La implementación del temporizador en QEMU recrea el comportamiento especificado en la documentación oficial de GRLIB, donde se establece que los eventos del temporizador son generados de manera sincronizada y periódica, permitiendo una generación predecible de interrupciones \cite{grlib_ip_core_user_manual}.
-
-Este tipo de temporizador es comúnmente utilizado para generar interrupciones periódicas en tareas de planificación, medir tiempos de ejecución o realizar rutinas de temporización precisa en sistemas embebidos.
+La implementación del temporizador en QEMU recrea el comportamiento especificado en la documentación oficial de GRLIB \cite{grlib}, 
+donde se establece que los eventos del temporizador son generados de manera sincronizada y periódica, permitiendo una generación 
+predecible de interrupciones. Este tipo de temporizador es comúnmente utilizado para planificación de tareas, medición de tiempos 
+y rutinas de temporización precisa en sistemas embebidos.
 
 \subsubsection*{Resumen de integración}
 
-La reutilización de los periféricos GRLIB disponibles en QEMU permitió una integración eficiente y realista de dispositivos comúnmente empleados en el ecosistema NOEL-V. El uso del sistema de dispositivos de QEMU junto con el sistema de objetos QOM (QEMU Object Model) facilitó la configuración modular y la conexión limpia de cada componente al mapa de memoria y al subsistema de interrupciones.
+La reutilización de los periféricos GRLIB disponibles en QEMU permitió una integración eficiente y realista de dispositivos 
+comúnmente empleados en el ecosistema NOEL-V \cite{grlib, qemu_devel_docs}. 
+El uso del sistema de dispositivos de QEMU junto con el sistema de objetos QOM (QEMU Object Model) facilitó la configuración modular 
+y la conexión limpia de cada componente al mapa de memoria y al subsistema de interrupciones \cite{qemu_devel_docs, qom2012}.
 
-Esta integración fue clave para lograr un entorno emulado funcionalmente representativo del hardware objetivo, permitiendo ejecutar binarios compilados con soporte para GRLIB y validar su comportamiento sin necesidad de hardware físico.
+Esta integración fue clave para lograr un entorno emulado funcionalmente representativo del hardware objetivo, permitiendo ejecutar 
+binarios compilados con soporte para GRLIB y validar su comportamiento sin necesidad de hardware físico.
+
 
 \subsection{Manejo de interrupciones (PLIC y ACLINT)}
 \label{subsec:interrupciones-noel}
 
-El sistema RISCV-NOEL implementado en QEMU replica el modelo de interrupciones definido por la especificación RISC-V Privileged Architecture. Este modelo se basa en dos niveles de control:
+El sistema RISCV-NOEL implementado en QEMU replica el modelo de interrupciones definido por la 
+\textit{RISC-V Privileged Architecture} \cite{waterman2011riscv}. 
+Este modelo contempla dos niveles de control principales:
 
 \begin{itemize}
     \item \textbf{PLIC (Platform-Level Interrupt Controller)}: Administra las interrupciones externas provenientes de periféricos.
-    \item \textbf{ACLINT (Advanced Core Local Interruptor)}: Gestiona las interrupciones locales por hart, como temporizadores o software interrupts.
+    \item \textbf{ACLINT (Advanced Core Local Interruptor)}: Gestiona las interrupciones locales por \textit{hart}, como temporizadores o interrupciones de software.
 \end{itemize}
 
-Ambos controladores fueron integrados dentro del SoC virtual definido en la máquina \texttt{noel-srg}, empleando dispositivos ya disponibles en QEMU.
+Ambos controladores fueron integrados dentro del SoC virtual definido en la máquina \texttt{noel-srg}, empleando dispositivos ya disponibles en QEMU \cite{qemu_riscv_virt_devices}.
 
 \subsubsection*{PLIC: Controlador de interrupciones externas}
 
-El PLIC se instanció mediante el dispositivo \texttt{riscv.plic}, ubicado en \texttt{hw/intc/sifive\_plic.c}. Este componente permite recibir interrupciones desde múltiples fuentes y distribuirlas entre los diferentes hilos de ejecución (harts). Su configuración incluye:
+El PLIC se instanció mediante el dispositivo \texttt{riscv.plic}, ubicado en \texttt{hw/intc/sifive\_plic.c}. 
+Este componente permite recibir interrupciones desde múltiples fuentes y distribuirlas entre los diferentes hilos de ejecución (\textit{harts}) \cite{qemu_riscv_virt_devices}. 
+Su configuración incluye:
 
 \begin{itemize}
-    \item Número de fuentes IRQ: Cada periférico con capacidad de interrupción (UART, GPIO, Timer) es una fuente.
-    \item Número de contextos: Cada hart posee un contexto de interrupción.
+    \item Número de fuentes IRQ:\@ Cada periférico con capacidad de interrupción (UART, GPIO, Timer) constituye una fuente.
+    \item Número de contextos:\@ Cada \textit{hart} dispone de un contexto de interrupción asociado.
 \end{itemize}
 
 La instancia se realiza con:
@@ -440,7 +578,7 @@ sysbus_mmio_map(SYS_BUS_DEVICE(&s->plic), 0, base_plic_addr);
 \caption{Instanciación del periférico PLIC en QEMU}
 \end{codefloat}
 
-Cada dispositivo con capacidad de generar interrupciones es conectado al PLIC mediante llamadas a \texttt{qdev\_connect\_gpio\_out()}.
+Cada dispositivo con capacidad de generar interrupciones se conecta al PLIC mediante llamadas a \texttt{qdev\_connect\_gpio\_out()}.
 
 \subsubsection*{ACLINT: interrupciones locales y temporizador}
 
@@ -451,7 +589,7 @@ El componente ACLINT, que combina CLINT y MTIMER, es responsable de las interrup
     \item \textbf{Software interrupts (MSIP)}: Utilizadas para comunicación entre hilos de ejecución.
 \end{itemize}
 
-En la máquina \texttt{noel-srg}, el dispositivo \texttt{riscv.aclint} fue instanciado de la siguiente forma:
+En la máquina \texttt{noel-srg}, el dispositivo \texttt{riscv.aclint} fue instanciado de la siguiente forma \cite{qemu_aclint_source}:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -463,21 +601,30 @@ sysbus_mmio_map(SYS_BUS_DEVICE(&s->aclint), 0, base_aclint_addr);
 \caption{Instanciación del periférico ACLINT en QEMU}
 \end{codefloat}
 
-Este controlador se integra directamente con los hilos de CPU simulados, permitiendo emular interrupciones temporizadas o de software como lo haría una plataforma real. Los temporizadores como el GPTIMER pueden conectarse a través de IRQs externas, que son redirigidas vía el PLIC, mientras que los contadores del ACLINT generan eventos internos.
+Este controlador se integra directamente con los hilos de CPU simulados, permitiendo emular interrupciones temporizadas
+o de software como en una plataforma real. Los temporizadores como el GPTIMER pueden conectarse a través de IRQs externas,
+redirigidas vía el PLIC, mientras que los contadores del ACLINT generan eventos internos \cite{waterman2011riscv}.
 
 \subsubsection*{Conexión de interrupciones entre componentes}
 
-La conexión de dispositivos periféricos al sistema de interrupciones se realiza mediante líneas virtuales IRQ proporcionadas por el modelo de QEMU. Por ejemplo, la conexión de un temporizador a una línea IRQ gestionada por el PLIC puede realizarse así:
+La conexión de dispositivos periféricos al sistema de interrupciones se realiza mediante líneas virtuales IRQ proporcionadas por el 
+modelo de QEMU. Por ejemplo, la conexión de un temporizador a una línea IRQ gestionada por el PLIC puede realizarse así:
 
 \begin{verbatim}
 qdev_connect_gpio_out(dev, 0, qdev_get_gpio_in(DEVICE(&s->plic), irq_id));
 \end{verbatim}
 
-Donde \texttt{irq\_id} identifica la línea de interrupción correspondiente. Estas conexiones son fundamentales para que el sistema operativo o el firmware emulado reciba las señales adecuadas en respuesta a eventos de hardware.
+Donde \texttt{irq\_id} identifica la línea de interrupción correspondiente. Estas conexiones son fundamentales para que el 
+sistema operativo o el firmware emulado reciban las señales adecuadas en respuesta a eventos de hardware.
 
-Durante el desarrollo fue necesario ajustar el comportamiento de generación de interrupciones de algunos periféricos. Inicialmente, la UART y el temporizador generaban interrupciones mediante pulsos breves utilizando la función \texttt{qemu\_irq\_pulse()}. Sin embargo, dado que el PLIC implementa un modelo de interrupciones \emph{level-triggered}, se modificó este comportamiento para que las interrupciones se mantuvieran activas hasta ser gestionadas por el software.
+Durante el desarrollo fue necesario ajustar el comportamiento de generación de interrupciones de algunos periféricos. 
+Inicialmente, la UART y el temporizador generaban interrupciones mediante pulsos breves con la función \texttt{qemu\_irq\_pulse()}. 
+Sin embargo, dado que el PLIC implementa un modelo de interrupciones \emph{level-triggered}, se modificó este comportamiento 
+para que las interrupciones permanecieran activas hasta ser gestionadas por el software \cite{qemu_riscv_virt_devices}.
 
-En la UART, por ejemplo, se reemplazó la invocación a \texttt{qemu\_irq\_pulse()} por \texttt{qemu\_irq\_raise()} cuando se detectaban datos disponibles en el buffer de recepción. Una vez que el buffer quedaba vacío, se llamaba a \texttt{qemu\_irq\_lower()} para desactivar la línea de interrupción:
+En la UART, por ejemplo, se reemplazó la invocación a \texttt{qemu\_irq\_pulse()} por \texttt{qemu\_irq\_raise()} cuando se detectaban 
+datos disponibles en el buffer de recepción. Una vez que el buffer quedaba vacío, se llamaba a \texttt{qemu\_irq\_lower()} para desactivar 
+la línea de interrupción:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -497,23 +644,29 @@ if (!uart_data_to_read(uart)) {
 \caption{Manejo de interrupciones en el periférico UART}
 \end{codefloat}
 
-Un mecanismo similar fue implementado en el temporizador (\texttt{grlib-gptimer}), donde la interrupción se mantenía activa mientras el bit de \emph{int pending} permanecía establecido.
+Un mecanismo similar fue implementado en el temporizador (\texttt{grlib-gptimer}), donde la interrupción se mantenía activa mientras
+el bit de \emph{int pending} permanecía establecido.
 
-Este enfoque garantiza una emulación coherente con el comportamiento esperado por el subsistema de interrupciones del RISC-V Privileged Architecture, donde las interrupciones externas deben permanecer activas hasta ser atendidas y confirmadas por el software.
-
+Este enfoque garantiza una emulación coherente con el comportamiento esperado por el subsistema de interrupciones de la arquitectura RISC-V,
+donde las interrupciones externas deben permanecer activas hasta ser atendidas y confirmadas por el software \cite{waterman2011riscv}.
 
 \vspace{1em}
-En conjunto, el uso de PLIC y ACLINT permite emular fielmente el comportamiento esperado por plataformas RISC-V modernas. Gracias a esto, se pueden probar sistemas multitarea, rutinas de interrupción, temporizadores y controladores de bajo nivel en un entorno completamente virtualizado, sin necesidad de disponer de hardware real.
+En conjunto, el uso de PLIC y ACLINT permite emular fielmente el comportamiento esperado por plataformas RISC-V modernas. Gracias a esto, 
+se pueden probar sistemas multitarea, rutinas de interrupción, temporizadores y controladores de bajo nivel en un entorno completamente 
+virtualizado, sin necesidad de disponer de hardware físico \cite{qemu_riscv_virt_devices}.
 
 
 \subsection{Integración de la máquina en el sistema de construcción de QEMU}
 \label{subsec:integracion-meson-kconfig}
 
-Para que QEMU compile y reconozca la nueva máquina \texttt{noel-srg}, fue necesario integrarla correctamente en su sistema de construcción. QEMU utiliza el sistema de build \texttt{meson}, complementado por un sistema de configuración modular basado en \texttt{Kconfig}, siguiendo una organización similar a la utilizada en otros proyectos complejos como el kernel de Linux.
+Para que QEMU compile y reconozca la nueva máquina \texttt{noel-srg}, fue necesario integrarla correctamente en su sistema de construcción. 
+QEMU utiliza el sistema de build \texttt{meson}, complementado por un sistema de configuración modular basado en \texttt{Kconfig}, siguiendo una 
+organización similar a la empleada en proyectos de gran escala como el kernel de Linux \cite{qemu_devel_docs, linux_coding_style}.  
 
 \subsubsection*{Modificaciones en \texttt{meson.build}}
 
-En el archivo \texttt{hw/riscv/meson.build}, que define los archivos fuente que componen la arquitectura RISC-V, se añadió la referencia al archivo \texttt{noel\_srg.c}, controlada mediante una opción de configuración:
+En el archivo \texttt{hw/riscv/meson.build}, que define los archivos fuente que componen la arquitectura RISC-V, se añadió la referencia al 
+archivo \texttt{noel\_srg.c}, controlada mediante una opción de configuración \cite{qemu_devel_docs}:
 
 \begin{verbatim}
 riscv_ss.add(when: 'CONFIG_NOEL_SRG', if_true: files('noel_srg.c'))
@@ -533,7 +686,7 @@ system_ss.add(when: 'CONFIG_GR_GPIO', if_true: files('gr_gpio.c'))
 
 \subsubsection*{Definición en \texttt{Kconfig}}
 
-La máquina \texttt{noel-srg} y sus periféricos asociados fueron registrados en el archivo \texttt{hw/riscv/Kconfig} mediante la siguiente definición:
+La máquina \texttt{noel-srg} y sus periféricos asociados fueron registrados en el archivo \texttt{hw/riscv/Kconfig} mediante la siguiente definición \cite{qemu_devel_docs}:
 
 \begin{codefloat}
 \begin{lstlisting}[style=CppExample]
@@ -556,11 +709,13 @@ config GR_GPIO
     bool
 \end{verbatim}
 
-Estas configuraciones aseguran que, cuando se activa la opción \texttt{NOEL\_SRG}, también se habilitan automáticamente los módulos necesarios para el funcionamiento completo de la máquina virtual: controladores de interrupciones (PLIC y ACLINT), periféricos GRLIB, el GPIO, y módulos auxiliares como \texttt{UNIMP}.
+Estas configuraciones aseguran que, cuando se activa la opción \texttt{NOEL\_SRG}, también se habilitan automáticamente los módulos 
+necesarios para el funcionamiento completo de la máquina virtual: controladores de interrupciones (PLIC y ACLINT), periféricos GRLIB, 
+el GPIO, y módulos auxiliares como \texttt{UNIMP}.
 
 \subsubsection*{Activación en las configuraciones por defecto}
 
-Para que la máquina \texttt{noel-srg} esté habilitada por defecto en una build típica de QEMU, se añadió su configuración en los siguientes archivos:
+Para que la máquina \texttt{noel-srg} esté habilitada por defecto en una build típica de QEMU, se añadió su configuración en los siguientes archivos \cite{qemu_devel_docs}:
 
 \begin{itemize}
     \item En \texttt{default-configs/devices/riscv32-softmmu.mak}:
@@ -574,22 +729,28 @@ CONFIG_NOEL_SRG = y
     \end{verbatim}
 \end{itemize}
 
-Estas modificaciones permiten que, al construir QEMU para \texttt{riscv32-softmmu}, la máquina \texttt{noel-srg} y sus periféricos queden integrados y disponibles sin necesidad de configuración adicional.
+Estas modificaciones permiten que, al construir QEMU para \texttt{riscv32-softmmu}, la máquina \texttt{noel-srg} y sus periféricos queden 
+integrados y disponibles sin necesidad de configuración adicional.
 
 \vspace{1em}
-Con estos cambios, el sistema de construcción de QEMU reconoce y compila correctamente todos los componentes necesarios para la emulación de la máquina \texttt{noel-srg}, garantizando su coherencia dentro del ecosistema modular del proyecto.
+Con estos cambios, el sistema de construcción de QEMU reconoce y compila correctamente todos los componentes necesarios para la emulación de la 
+máquina \texttt{noel-srg}, garantizando su coherencia dentro del ecosistema modular del proyecto.
 
 \subsection{Estructura del binario y entorno de ejecución inicial}
 \label{subsec:estructura-binario}
 
-Para ejecutar correctamente los binarios en la máquina virtual \texttt{noel-srg}, fue necesario definir la estructura del ejecutable y la secuencia de inicialización mínima requerida por el sistema. Esta sección describe la composición del binario ELF utilizado en las pruebas y los elementos clave del proceso de arranque.
+Para ejecutar correctamente los binarios en la máquina virtual \texttt{noel-srg}, fue necesario definir la estructura del ejecutable
+y la secuencia de inicialización mínima requerida por el sistema. Esta sección describe la composición del binario ELF utilizado en las pruebas
+y los elementos clave del proceso de arranque.
 
 \subsubsection*{Estructura del ELF generado}
 
-Los binarios fueron generados en formato ELF de 32 bits (\texttt{elf32-littleriscv}), utilizando el ensamblador y enlazador de la toolchain \texttt{riscv-gaisler-elf-gcc}. El script de enlazado (\texttt{linker.ld}) define las secciones básicas que conforman el binario:
+Los binarios fueron generados en formato ELF de 32 bits (\texttt{elf32-littleriscv}), utilizando el ensamblador y enlazador de la toolchain 
+\texttt{riscv-gaisler-elf-gcc} \cite{gaisler-noelv}. El script de enlazado (\texttt{linker.ld}) define las secciones básicas que conforman el binario:
 
 \begin{itemize}
-    \item \textbf{.text}: contiene el código ejecutable del firmware. Se ubica en la dirección \texttt{0x00000000}, correspondiente al arranque por defecto de la máquina virtual.
+    \item \textbf{.text}: contiene el código ejecutable del firmware. Se ubica en la dirección \texttt{0x00000000}, correspondiente al arranque por 
+    defecto de la máquina virtual.
     \item \textbf{.rodata}: almacena datos de solo lectura, como cadenas de texto constantes.
     \item \textbf{.data} y \textbf{.sdata}: contienen datos inicializados en tiempo de ejecución.
     \item \textbf{stack}: el script define la ubicación del tope de pila mediante la etiqueta \texttt{stack\_top}, alineada a 4 bytes.
@@ -597,13 +758,49 @@ Los binarios fueron generados en formato ELF de 32 bits (\texttt{elf32-littleris
 
 La directiva \texttt{ENTRY(\_start)} establece el punto de entrada del binario en la etiqueta \texttt{\_start}, definida en el archivo de ensamblador.
 
+\begin{codefloat}
+\begin{lstlisting}[style=CppExample]
+
+OUTPUT_ARCH( "riscv" )
+OUTPUT_FORMAT("elf32-littleriscv")
+ENTRY( _start )
+SECTIONS
+{
+  /* text: test code section */
+  . = 0x00000000;
+  .text : { *(.text) }
+  /* gnu_build_id: readonly build identifier */
+  .gnu_build_id : { *(.note.gnu.build-id) }
+  /* rodata: readonly data segment */
+  .rodata : { *(.rodata) }
+
+  /* data: Initialized data segment */
+  /* . = 0x80000000; */
+  .data : { *(.data) }
+  .sdata : { *(.sdata) }
+  .debug : { *(.debug) }
+   . = ALIGN(4);
+  . += 0x1000;
+  stack_top = .;
+
+  /* End of uninitalized data segement */
+  _end = .;
+}
+
+\end{lstlisting}
+\caption{Script de enlazado linker.ld}
+\end{codefloat}
+
+
 \subsubsection*{Startup assembly}
 
-El arranque del sistema se implementó mediante un archivo de ensamblador (\texttt{start.s}), que realiza la configuración inicial del entorno de ejecución. Sus funciones principales son:
+El arranque del sistema se implementó mediante un archivo de ensamblador (\texttt{start.s}), 
+que realiza la configuración inicial del entorno de ejecución. Sus funciones principales son:
 
 \begin{itemize}
-    \item Leer el identificador del hart (\texttt{mhartid}) utilizando la instrucción \texttt{csrr}. Esto permite determinar si el núcleo que arranca es el principal.
-    \item Detener la ejecución de hilos secundarios mediante un bucle infinito si el hart no es el 0. Esta lógica permite que únicamente el primer núcleo ejecute el firmware de prueba, simplificando el entorno.
+    \item Leer el identificador del hart (\texttt{mhartid}) utilizando la instrucción \texttt{csrr}, conforme a la especificación RISC-V Privileged Architecture \cite{waterman2011riscv}. 
+    \item Detener la ejecución de hilos secundarios mediante un bucle infinito si el hart no es el 0. 
+    Esta lógica permite que únicamente el primer núcleo ejecute el firmware de prueba, simplificando el entorno.
     \item Inicializar el puntero de pila (\texttt{sp}) con la dirección definida como \texttt{stack\_top} en el linker script.
     \item Llamar a la función \texttt{kmain()}, definida en C, que representa el punto de inicio del firmware de prueba.
 \end{itemize}
@@ -616,23 +813,54 @@ El flujo general de arranque es el siguiente:
     \item Se transfiere el control a la función principal del firmware (\texttt{kmain()}).
 \end{enumerate}
 
+\begin{codefloat}
+\begin{lstlisting}[style=CppExample]
+.align 2
+.section .text
+.globl _start
+
+_start:
+        csrr  t0, mhartid             # read hardware thread id 
+                                      #  (`hart` stands for `hardware thread`)
+
+        bnez  t0, halt                # run only on the first hardware thread
+                                      # (hartid == 0), halt all the other threads
+
+        la    sp, stack_top           # setup stack pointer
+
+        call    kmain      
+
+halt:   j     halt                    # enter the infinite loop
+
+\end{lstlisting}
+\caption{Arranque del sistema de ejecución start.s}
+\end{codefloat}
+
 \subsubsection*{Importancia del arranque personalizado}
 
-Este esquema de arranque minimalista es característico de los sistemas embebidos, donde no existe un sistema operativo que inicialice el entorno. Al definir manualmente la pila y el flujo de ejecución, se asegura un entorno controlado y predecible, facilitando la depuración y el análisis de errores durante el desarrollo inicial.
+Este esquema de arranque minimalista es característico de los sistemas embebidos, donde no existe un sistema operativo que inicialice el entorno. 
+Al definir manualmente la pila y el flujo de ejecución, se asegura un entorno controlado y predecible, 
+facilitando la depuración y el análisis de errores durante el desarrollo inicial.  
 
-La correcta configuración del \emph{entry point} y la disposición de las secciones en memoria fueron claves para que QEMU pudiera cargar y ejecutar el binario directamente mediante el dispositivo \texttt{loader}, sin necesidad de un bootloader intermedio.
-
+La correcta configuración del \emph{entry point} y la disposición de las secciones en memoria fueron claves para que QEMU 
+pudiera cargar y ejecutar el binario directamente mediante el dispositivo \texttt{loader}, sin necesidad de un bootloader intermedio 
+\cite{qemu_system_emulation}.
 
 \section{Entorno de ejecución y depuración}
 \label{sec:entorno-ejecucion}
 
-Una vez implementados los distintos componentes de la máquina virtual \texttt{noel-srg}, fue necesario preparar un entorno capaz de ejecutar binarios compilados para dicha plataforma y facilitar su depuración. Esta sección describe cómo se diseñó dicho entorno, incluyendo la configuración del emulador, los binarios de prueba desarrollados y las herramientas de depuración empleadas durante el desarrollo.
+Una vez implementados los distintos componentes de la máquina virtual \texttt{noel-srg}, fue necesario preparar un entorno capaz de 
+ejecutar binarios compilados para dicha plataforma y facilitar su depuración. Esta sección describe cómo se diseñó dicho entorno, 
+incluyendo la configuración del emulador, los binarios de prueba desarrollados y las herramientas de depuración empleadas durante el desarrollo.
 
 \subsection*{Compilación de binarios de prueba}
 
-Los binarios utilizados para validar el correcto funcionamiento del sistema fueron desarrollados en lenguaje C y ensamblador, utilizando el compilador \texttt{riscv-gaisler-elf-gcc}, parte de la toolchain \emph{NCC} proporcionada por Gaisler. Esta herramienta genera ejecutables en formato ELF compatibles con la arquitectura RISC-V implementada en NOEL-V, respetando sus convenciones específicas de inicialización y enlazado.
+Los binarios utilizados para validar el correcto funcionamiento del sistema fueron desarrollados en lenguaje C y ensamblador, 
+utilizando el compilador \texttt{riscv-gaisler-elf-gcc}, parte de la toolchain \emph{NCC} proporcionada por Gaisler \cite{gaisler-noelv}.  
+Esta herramienta genera ejecutables en formato ELF compatibles con la arquitectura RISC-V implementada en NOEL-V, respetando sus 
+convenciones específicas de inicialización y enlazado.
 
-Cada binario está diseñado para activar un subsistema particular del SoC emulado. Se crearon pruebas específicas para los siguientes componentes:
+Cada binario fue diseñado para activar un subsistema particular del SoC emulado. Se desarrollaron pruebas específicas para los siguientes componentes:
 \begin{itemize}
     \item Comunicación serie por UART, mediante el envío y recepción de datos.
     \item Escritura y lectura en registros GPIO, verificando su correcto direccionamiento.
@@ -642,18 +870,23 @@ Cada binario está diseñado para activar un subsistema particular del SoC emula
 
 \subsection*{Ejecución de binarios en QEMU}
 
-Los binarios fueron ejecutados utilizando QEMU con el backend RISC-V, cargando directamente los ejecutables ELF mediante el dispositivo \texttt{loader}, que permite ubicar el binario en memoria y comenzar su ejecución automáticamente. El comando utilizado fue:
+Los binarios fueron ejecutados utilizando QEMU con el backend RISC-V, cargando directamente los ejecutables ELF mediante el 
+dispositivo \texttt{loader}, que permite ubicar el binario en memoria y comenzar su ejecución automáticamente 
+\cite{qemu_system_emulation}. El comando utilizado fue:
 
 \begin{verbatim}
 qemu-system-riscv32 -M noel-srg -nographic -no-reboot \
     -device loader,file=kernel.elf
 \end{verbatim}
 
-Se empleó el modo \texttt{-nographic} para redirigir la salida UART al terminal, facilitando la observación de la salida del sistema embebido sin necesidad de interfaces gráficas. El parámetro \texttt{-no-reboot} evita que QEMU reinicie automáticamente al finalizar la ejecución del binario, permitiendo conservar la salida para su análisis.
+Se empleó el modo \texttt{-nographic} para redirigir la salida UART al terminal, facilitando la observación de la salida del 
+sistema embebido sin necesidad de interfaces gráficas. El parámetro \texttt{-no-reboot} evita que QEMU reinicie automáticamente al 
+finalizar la ejecución del binario, permitiendo conservar la salida para su análisis.
 
 \subsection*{Depuración con GDB}
 
-Durante el desarrollo, se utilizó \texttt{riscv-gaisler-elf-gdb} para depurar el comportamiento del sistema. QEMU se ejecutó en modo \emph{GDB server}, que permite conectar un depurador externo:
+Durante el desarrollo, se utilizó \texttt{riscv-gaisler-elf-gdb} para depurar el comportamiento del sistema \cite{gdb}.  
+QEMU se ejecutó en modo \emph{GDB server}, que permite conectar un depurador externo:
 
 \begin{verbatim}
 qemu-system-riscv32 -M noel-srg -S -gdb tcp::1234 \
@@ -671,7 +904,9 @@ riscv-gaisler-elf-gdb test_gpio.elf
 (gdb) continue
 \end{verbatim}
 
-Esto permitió inspeccionar el estado de los registros, examinar el contenido de memoria y verificar el flujo del programa paso a paso. Fue especialmente útil para depurar la inicialización del entorno y el manejo correcto de interrupciones.
+Esto permitió inspeccionar el estado de los registros, examinar el contenido de memoria y verificar el flujo del programa paso a paso. 
+Fue especialmente útil para depurar la inicialización del entorno y el manejo correcto de interrupciones 
+\cite{qemu_devel_docs}.
 
 \subsection*{Observación del comportamiento del sistema}
 
@@ -681,10 +916,12 @@ Durante la ejecución, se monitorearon distintos indicadores para validar el com
     \item \textbf{Salida por UART}: utilizada como indicador primario del funcionamiento del sistema.
     \item \textbf{Estado de registros GPIO}: confirmando que las lecturas y escrituras correspondían a las operaciones realizadas.
     \item \textbf{Interrupciones atendidas}: observadas a través de mensajes en consola y verificaciones en los registros del PLIC.
-    \item \textbf{Trazas internas de QEMU}: generadas con la opción \texttt{-d in\_asm,cpu,exec} para obtener un log detallado de las instrucciones ejecutadas y los eventos de hardware simulados.
+    \item \textbf{Trazas internas de QEMU}: generadas con la opción \texttt{-d in\_asm,cpu,exec} para obtener un log detallado de las instrucciones ejecutadas y los eventos de hardware simulados \cite{qemu_devel_docs}.
 \end{itemize}
 
-Estos mecanismos de monitoreo permitieron diagnosticar comportamientos anómalos y ajustar tanto la máquina virtual como el firmware de prueba. La información recolectada sirvió como base para la validación formal que se analiza en el capítulo siguiente.
+Estos mecanismos de monitoreo permitieron diagnosticar comportamientos anómalos y ajustar tanto la máquina virtual como el firmware de prueba. 
+La información recolectada sirvió como base para la validación formal que se analiza en el capítulo siguiente.
+
 
 %%% Local Variables:
 %%% TeX-master: "../book"
